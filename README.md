@@ -1,7 +1,7 @@
 # Magnus (Server-Side)
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/KroderDev/magnus/build.yml?branch=master&style=flat-square&label=Build)
-![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1-brown?style=flat-square&logo=minecraft)
+![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1--1.21.11-brown?style=flat-square&logo=minecraft)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue?style=flat-square&logo=fabric)
 ![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple?style=flat-square&logo=kotlin)
 ![License](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)
