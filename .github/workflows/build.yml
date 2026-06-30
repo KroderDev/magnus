@@ -11,7 +11,30 @@ permissions:
 
 jobs:
   build:
+    name: build (${{ matrix.id }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: mc1211-baseline
+            minecraft_version: 1.21.1
+            yarn_mappings: 1.21.1+build.3
+            loader_version: 0.17.3
+            fabric_api_version: 0.116.8+1.21.1
+            fabric_kotlin_version: 1.13.8+kotlin.2.3.0
+          - id: mc1211-latest
+            minecraft_version: 1.21.11
+            yarn_mappings: 1.21.11+build.6
+            loader_version: 0.19.3
+            fabric_api_version: 0.141.4+1.21.11
+            fabric_kotlin_version: 1.13.12+kotlin.2.4.0
+    env:
+      ORG_GRADLE_PROJECT_minecraft_version: ${{ matrix.minecraft_version }}
+      ORG_GRADLE_PROJECT_yarn_mappings: ${{ matrix.yarn_mappings }}
+      ORG_GRADLE_PROJECT_loader_version: ${{ matrix.loader_version }}
+      ORG_GRADLE_PROJECT_fabric_api_version: ${{ matrix.fabric_api_version }}
+      ORG_GRADLE_PROJECT_fabric_kotlin_version: ${{ matrix.fabric_kotlin_version }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -22,14 +45,20 @@ jobs:
         with:
           java-version: '21'
           distribution: 'microsoft'
+      - name: setup gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: test
-        run: ./gradlew test
-      - name: build
-        run: ./gradlew build
+      - name: build and run gametest
+        run: ./gradlew build runGametest
       - name: capture build artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
-          path: build/libs/
+          name: ${{ matrix.id }}-artifacts
+          if-no-files-found: ignore
+          path: |
+            build/libs/
+            build/junit.xml
+            **/build/reports/
+            **/build/test-results/
