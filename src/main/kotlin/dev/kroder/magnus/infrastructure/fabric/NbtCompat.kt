@@ -79,7 +79,8 @@ object NbtCompat {
             method.invoke(inventory, compound)
         } catch (e: NoSuchMethodException) {
             val list = NbtList()
-            val method = Inventory::class.java.getMethod("writeNbt", NbtList::class.java)
+            val type = inventory.javaClass
+            val method = type.getMethod("writeNbt", NbtList::class.java)
             val result = method.invoke(inventory, list)
             compound.put("Inventory", result as NbtElement)
         }
@@ -91,7 +92,8 @@ object NbtCompat {
             method.invoke(inventory, compound)
         } catch (e: NoSuchMethodException) {
             val list = getList(compound, "Inventory")
-            val method = Inventory::class.java.getMethod("readNbt", NbtList::class.java)
+            val type = inventory.javaClass
+            val method = type.getMethod("readNbt", NbtList::class.java)
             method.invoke(inventory, list)
         }
     }
