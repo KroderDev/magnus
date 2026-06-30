@@ -95,6 +95,8 @@ dependencies {
     
     // Coroutines test support
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
+
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8"
 }
 
 processResources {

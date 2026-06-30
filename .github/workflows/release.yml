@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Artifacts
-        run: ./gradlew build
+        run: ./gradlew test assemble
 
       # This step publishes to all platforms configured in mc-publish
       - name: Publish Mod
@@ -41,9 +41,7 @@ jobs:
           version: ${{ github.ref_name }}
           version-type: release
           loaders: fabric
-          game-versions: |
-            1.21.1
-            1.21.11
+          game-versions: 1.21.1
           retry-attempts: 3
           retry-delay: 10000
 

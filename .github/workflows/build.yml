@@ -13,17 +13,20 @@ jobs:
   build:
     name: build (${{ matrix.id }})
     runs-on: ubuntu-24.04
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - id: mc1211-baseline
+            experimental: false
             minecraft_version: 1.21.1
             yarn_mappings: 1.21.1+build.3
             loader_version: 0.17.3
             fabric_api_version: 0.116.8+1.21.1
             fabric_kotlin_version: 1.13.8+kotlin.2.3.0
           - id: mc1211-latest
+            experimental: true
             minecraft_version: 1.21.11
             yarn_mappings: 1.21.11+build.6
             loader_version: 0.19.3
@@ -49,8 +52,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: build and run gametest
-        run: ./gradlew build runGametest
+      - name: test, assemble, and run gametest
+        run: ./gradlew test assemble runGametest
       - name: capture build artifacts
         if: always()
         uses: actions/upload-artifact@v4
