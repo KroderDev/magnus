@@ -41,7 +41,9 @@ jobs:
           version: ${{ github.ref_name }}
           version-type: release
           loaders: fabric
-          game-versions: 1.21.1
+          game-versions: |
+            1.21.1
+            1.21.11
           retry-attempts: 3
           retry-delay: 10000
 
