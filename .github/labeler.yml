@@ -1,0 +1,46 @@
+# Auto-label pull requests based on changed paths
+# See https://github.com/actions/labeler
+
+"domain":
+  - src/main/kotlin/**/domain/**/*
+
+"application":
+  - src/main/kotlin/**/application/**/*
+
+"infrastructure":
+  - src/main/kotlin/**/infrastructure/**/*
+
+"client":
+  - src/client/**/*
+
+"tests":
+  - src/test/**/*
+
+"docs":
+  - docs/**/*
+  - README.md
+
+"docker":
+  - Dockerfile
+  - Dockerfile.dev
+  - docker-compose.yml
+
+"ci":
+  - .github/**/*
+  - Makefile
+
+"gradle":
+  - build.gradle
+  - settings.gradle
+  - gradle.properties
+  - gradle/**/*
+  - gradlew
+  - gradlew.bat
+
+"mod-compat":
+  - src/baseline/**/*
+  - src/latest/**/*
+
+"security":
+  - src/main/kotlin/**/infrastructure/security/**/*
+  - src/main/kotlin/**/domain/exception/**/*
