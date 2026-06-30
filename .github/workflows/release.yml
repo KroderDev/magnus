@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -14,6 +13,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v6
@@ -31,17 +32,17 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Artifacts
-        run: ./gradlew test assemble
+        run: ./gradlew assemble
 
-      # This step publishes to all platforms configured in mc-publish
       - name: Publish Mod
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          name: Magnus Sync ${{ github.ref_name }}
-          version: ${{ github.ref_name }}
+          name: Magnus Sync ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name }}
           version-type: release
           loaders: fabric
-          game-versions: 1.21.1
+          game-versions: ">=1.21.1 <1.21.12"
+          game-version-filter: releases
           retry-attempts: 3
           retry-delay: 10000
 
@@ -53,7 +54,6 @@ jobs:
 
           # GitHub Release
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-generate-changelog: true
 
           # Modrinth Release
           modrinth-id: 4AvJZ4tk
