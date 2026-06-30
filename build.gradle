@@ -48,6 +48,13 @@ fabricApi {
 	}
 }
 
+def mcParts = project.minecraft_version.split("\\.").collect { Integer.parseInt(it) }
+def isMc1211Latest = mcParts.size() >= 3 && mcParts[0] == 1 && mcParts[1] == 21 && mcParts[2] > 1
+
+if (isMc1211Latest) {
+	sourceSets.main.kotlin.exclude("**/MagnusGameTests.kt")
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -100,10 +107,15 @@ dependencies {
 }
 
 processResources {
+	def gametestEntrypoint = isMc1211Latest
+		? ""
+		: ",\n\t\t\"fabric-gametest\": [\n\t\t\t{\n\t\t\t\t\"value\": \"dev.kroder.magnus.gametest.MagnusGameTests\",\n\t\t\t\t\"adapter\": \"kotlin\"\n\t\t\t}\n\t\t]"
+
 	def modMetadata = [
-		version          : project.version,
-		minecraft_version: project.minecraft_version,
-		loader_version   : project.loader_version,
+		version              : project.version,
+		minecraft_version    : project.minecraft_version,
+		loader_version       : project.loader_version,
+		gametest_entrypoint  : gametestEntrypoint,
 	]
 
 	inputs.properties(modMetadata)
