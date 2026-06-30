@@ -4,13 +4,13 @@
 ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1--1.21.11-brown?style=flat-square&logo=minecraft)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue?style=flat-square&logo=fabric)
 ![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple?style=flat-square&logo=kotlin)
-![License](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)
 ![GitHub Release](https://img.shields.io/github/v/release/KroderDev/magnus?style=flat-square&label=Release&color=green)
+[![Modrinth Version](https://img.shields.io/modrinth/v/magnus?style=flat-square&logo=modrinth&color=00AF5C&label=Modrinth)](https://modrinth.com/mod/magnus)
+[![CurseForge Version](https://img.shields.io/curseforge/v/1448049?style=flat-square&logo=curseforge&color=F16436&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/magnus)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
 ![Trivy](https://img.shields.io/badge/security-Trivy-1904DA?style=flat-square&logo=trivy)
-[![Modrinth Version](https://img.shields.io/modrinth/v/magnus?style=flat-square&logo=modrinth&color=00AF5C&label=Modrinth)](https://modrinth.com/mod/magnus)
-[![CurseForge Version](https://img.shields.io/curseforge/v/1448049?style=flat-square&logo=curseforge&color=F16436&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/magnus)
+![License](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)
 
 
 A modular, high-performance, and resilient synchronization suite for Minecraft Fabric servers. Features real-time inventory sync, cross-server chat, and global player management.
