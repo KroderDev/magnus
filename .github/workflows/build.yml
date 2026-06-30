@@ -40,7 +40,7 @@ jobs:
       ORG_GRADLE_PROJECT_fabric_kotlin_version: ${{ matrix.fabric_kotlin_version }}
     steps:
       - name: checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v6
       - name: setup jdk
