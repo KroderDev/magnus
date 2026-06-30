@@ -3,6 +3,7 @@ plugins {
 	id 'maven-publish'
 	id "org.jetbrains.kotlin.jvm" version "2.3.0"
 	id "org.jetbrains.kotlin.plugin.serialization" version "2.1.0"
+	id "io.gitlab.arturbosch.detekt" version "1.23.8"
 }
 
 version = project.mod_version
@@ -152,4 +153,13 @@ publishing {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+detekt {
+	config = files("$rootDir/detekt.yml")
+	buildUponDefaultConfig = true
+}
+
+tasks.withType(io.gitlab.arturbosch.detekt.Detekt).configureEach {
+	jvmTarget = "21"
 }

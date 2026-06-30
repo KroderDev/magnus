@@ -91,6 +91,49 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
 |---------|-------------|
 | `/glist` | Shows total player count and players grouped by server (requires `enableGlobalPlayerList`) |
 
+## Development
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+All development tasks run inside a Docker container. You don't need Java, Gradle, PostgreSQL, or Redis installed on your host.
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `make build` | Compile and package the mod |
+| `make test` | Run all tests (unit + integration) |
+| `make lint` | Run Detekt static analysis |
+| `make shell` | Open a shell in the dev container |
+| `make up` | Start PostgreSQL and Redis for manual testing |
+| `make down` | Stop all services |
+
+### First Run
+
+```bash
+make build
+```
+
+The first build downloads all dependencies (including Minecraft assets) and caches them in a persistent Docker volume. Subsequent builds are significantly faster.
+
+### Running Tests
+
+```bash
+make test
+```
+
+Integration tests use [Testcontainers](https://testcontainers.com/) to spin up isolated PostgreSQL and Redis instances automatically.
+
+### Code Quality
+
+```bash
+make lint
+```
+
+This project uses [Detekt](https://detekt.dev/) for Kotlin static analysis. Configuration is in `detekt.yml`.
+
 ## Architecture
 
 For detailed flow diagrams and behavior documentation:
