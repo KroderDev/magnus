@@ -25,6 +25,7 @@ class GlistCommand(
         )
     }
 
+    @Suppress("NestedBlockDepth")
     private fun execute(context: CommandContext<ServerCommandSource>): Int {
         val source = context.source
 
@@ -69,7 +70,8 @@ class GlistCommand(
             }
 
             return 1
-        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             source.sendError(Text.literal("§cError fetching global player list."))
             return 0

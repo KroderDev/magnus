@@ -24,7 +24,8 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
                 jedisPool.resource.use { jedis ->
                     jedis.publish(channel, message)
                 }
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to publish message to channel '$channel': ${e.message}", e)
             }
@@ -41,7 +42,8 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
             override fun onMessage(ch: String, msg: String) {
                 try {
                     callback(msg)
-                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.error("Error handling message on channel '$ch': ${e.message}", e)
                 }
@@ -57,7 +59,8 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
                     logger.info("Subscribing to channel: $channel")
                     jedis.subscribe(pubSub, channel)
                 }
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Subscription to '$channel' failed or was interrupted: ${e.message}")
             } finally {
@@ -71,7 +74,8 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
         listeners.values.forEach {
             try {
                 if (it.isSubscribed) it.unsubscribe()
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Error unsubscribing: ${e.message}")
             }

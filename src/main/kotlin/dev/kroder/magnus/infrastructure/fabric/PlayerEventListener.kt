@@ -39,18 +39,18 @@ class PlayerEventListener(
                 // Apply the loaded data to the live player instance
                 FabricPlayerAdapter.applyToPlayer(player, data)
             }
-        } catch (e: dev.kroder.magnus.domain.exception.SessionLockedException) {
+        } catch (@Suppress("SwallowedException") e: dev.kroder.magnus.domain.exception.SessionLockedException) {
             // The Mixin should prevent this from happening, but as a safety net:
             handler.disconnect(net.minecraft.text.Text.literal("§cSession Locked: Please try again in a few seconds."))
-        } catch (e: dev.kroder.magnus.domain.exception.DataUnavailableException) {
+        } catch (@Suppress("SwallowedException") e: dev.kroder.magnus.domain.exception.DataUnavailableException) {
             // CRITICAL: DB is down and no backup. Kick to prevent data loss.
             handler.disconnect(
                 net.minecraft.text.Text.literal(
                     "§cSync Error: Database Unavailable.\n§7Please try again later. Your data is safe."
                 )
             )
-        } @Suppress("TooGenericExceptionCaught")
-        catch (e: Exception) {
+        }
+        @Suppress("TooGenericExceptionCaught")`n        catch (e: Exception) {
             logger.error("Unhandled error", e)
         }
     }

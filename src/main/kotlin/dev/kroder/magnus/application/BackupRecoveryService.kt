@@ -29,7 +29,8 @@ class BackupRecoveryService(
         scheduler.scheduleAtFixedRate({
             try {
                 processBackups()
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Error during recovery process", e)
             }
@@ -43,6 +44,7 @@ class BackupRecoveryService(
     /**
      * Scans and attempts to restore/merge backups.
      */
+    @Suppress("NestedBlockDepth")
     fun processBackups() {
         val backups = localBackup.findAllStartups()
         if (backups.isEmpty()) return
@@ -76,7 +78,8 @@ class BackupRecoveryService(
                         localBackup.deleteFile(backupData.uuid) // Obsolete backup
                     }
             }
-        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
                 logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
             }

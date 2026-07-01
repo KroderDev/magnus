@@ -57,7 +57,8 @@ class SecureRedisMessageBus(
                 jedisPool.resource.use { jedis ->
                     jedis.publish(channel, payload)
                 }
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to publish to '$channel': ${e.message}", e)
             }
@@ -98,7 +99,8 @@ class SecureRedisMessageBus(
                     }
 
                     subscription.callback(payload)
-                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.error("Error handling message on '$ch': ${e.message}", e)
                 }
@@ -113,7 +115,8 @@ class SecureRedisMessageBus(
                     logger.info("Subscribing to channel: ${subscription.channel}")
                     jedis.subscribe(pubSub, subscription.channel)
                 }
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 if (!isShuttingDown.get()) {
                     handleSubscriptionFailure(subscription, attempt, e)
@@ -146,6 +149,7 @@ class SecureRedisMessageBus(
         }
     }
 
+    @Suppress("NestedBlockDepth")
     override fun close() {
         isShuttingDown.set(true)
         logger.info("Closing all Redis subscriptions...")
@@ -155,7 +159,8 @@ class SecureRedisMessageBus(
                 subscription.pubSub?.let {
                     if (it.isSubscribed) it.unsubscribe()
                 }
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Error unsubscribing from '${subscription.channel}': ${e.message}")
             }

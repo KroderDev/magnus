@@ -92,7 +92,8 @@ object LoginQueueHandler {
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
             throw IllegalStateException("Login synchronization interrupted", e)
-        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             Magnus.logger.error("LoginQueueHandler: Error checking session lock for $playerName", e)
             // On error, allow login to proceed (fail-open behavior)

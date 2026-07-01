@@ -39,6 +39,7 @@ object JedisPoolFactory {
      * @param timeoutMs Connection timeout in milliseconds
      * @return Configured JedisPool instance
      */
+    @Suppress("LongParameterList")
     fun create(
         host: String,
         port: Int,

@@ -43,7 +43,8 @@ class LocalBackupRepository(
                     val uuidStr = file.nameWithoutExtension
                     val uuid = UUID.fromString(uuidStr)
                     pendingBackups.add(uuid)
-                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.warn("Failed to parse backup filename", e)
                 }
@@ -74,7 +75,8 @@ class LocalBackupRepository(
                 try {
                     val content = Files.readString(file.toPath())
                     result = json.decodeFromString(PlayerData.serializer(), content)
-                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.warn("Failed to read backup file", e)
                 }
@@ -105,7 +107,8 @@ class LocalBackupRepository(
             try {
                 val content = Files.readString(file.toPath())
                 json.decodeFromString(PlayerData.serializer(), content)
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 null
             }

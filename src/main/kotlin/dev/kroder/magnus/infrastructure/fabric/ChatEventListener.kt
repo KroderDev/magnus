@@ -28,7 +28,8 @@ class ChatEventListener(
                     playerName = sender.gameProfile.name,
                     rawMessage = rawText
                 )
-            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to process chat message: ${e.message}", e)
             }

@@ -40,7 +40,8 @@ class ModuleManager {
             module.onEnable()
             activeModules.add(id)
             logger.info("Module '${module.name}' enabled successfully.")
-        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("CRITICAL: Failed to enable module '${module.name}': ${e.message}", e)
         }
@@ -62,7 +63,8 @@ class ModuleManager {
             module.onDisable()
             activeModules.remove(id)
             logger.info("Module '${module.name}' disabled successfully.")
-        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        }
+        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Error during disable of module '${module.name}': ${e.message}", e)
         }
