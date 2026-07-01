@@ -1,11 +1,6 @@
 package dev.kroder.magnus.infrastructure.messaging
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.returns
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import redis.clients.jedis.Jedis

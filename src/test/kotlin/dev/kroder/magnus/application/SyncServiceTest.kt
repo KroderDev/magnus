@@ -4,13 +4,7 @@ import dev.kroder.magnus.domain.exception.SessionLockedException
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import dev.kroder.magnus.domain.processing.LockManager
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.returns
-import io.mockk.throws
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

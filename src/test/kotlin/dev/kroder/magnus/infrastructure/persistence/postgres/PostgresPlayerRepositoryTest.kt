@@ -1,6 +1,7 @@
 package dev.kroder.magnus.infrastructure.persistence.postgres
 
 import dev.kroder.magnus.domain.model.PlayerData
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction

@@ -1,11 +1,7 @@
 package dev.kroder.magnus.infrastructure.module
 
 import dev.kroder.magnus.domain.module.MagnusModule
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.returns
-import io.mockk.throws
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach

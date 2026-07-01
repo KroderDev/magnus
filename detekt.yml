@@ -3,3 +3,6 @@ formatting:
     indentSize: 4
   ParameterListWrapping:
     indentSize: 4
+style:
+  NoWildcardImports:
+    excludes: ['**/test/**']
