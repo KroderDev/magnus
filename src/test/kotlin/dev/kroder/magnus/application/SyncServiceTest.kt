@@ -1,4 +1,4 @@
-@file:Suppress("NoWildcardImports")
+@file:Suppress("WildcardImport", "NoWildcardImports")
 
 package dev.kroder.magnus.application
 

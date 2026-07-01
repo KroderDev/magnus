@@ -1,3 +1,4 @@
+@file:Suppress("ImportOrdering")
 package dev.kroder.magnus.infrastructure.messaging
 
 import com.redis.testcontainers.RedisContainer

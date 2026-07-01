@@ -1,4 +1,4 @@
-@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException", "ImportOrdering")
 
 package dev.kroder.magnus.application
 

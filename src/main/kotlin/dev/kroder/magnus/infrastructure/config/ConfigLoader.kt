@@ -1,8 +1,9 @@
-@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException", "ImportOrdering")
 
 package dev.kroder.magnus.infrastructure.config
 
 import net.fabricmc.loader.api.FabricLoader
+import org.slf4j.LoggerFactory
 
 import java.io.File
 import java.nio.file.Files

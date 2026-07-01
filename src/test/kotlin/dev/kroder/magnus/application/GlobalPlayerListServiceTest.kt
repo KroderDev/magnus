@@ -1,3 +1,4 @@
+@file:Suppress("ImportOrdering")
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
