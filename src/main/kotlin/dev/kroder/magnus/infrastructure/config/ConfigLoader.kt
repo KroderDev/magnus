@@ -11,7 +11,10 @@ import java.util.Base64
 object ConfigLoader {
     private const val SECRET_BYTE_LENGTH = 32
 
-    private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+    private val json = Json {
+        prettyPrint = true
+        ignoreUnknownKeys = true
+    }
 
     fun load(configDir: java.nio.file.Path? = null): MagnusConfig {
         val dir = configDir ?: FabricLoader.getInstance().configDir

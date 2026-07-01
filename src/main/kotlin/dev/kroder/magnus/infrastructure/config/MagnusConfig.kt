@@ -30,9 +30,9 @@ data class MagnusConfig(
 
     // Redis Security Settings
     val redisSsl: Boolean = false,
-    val enableMessageSigning: Boolean = true,  // Secure by default
+    val enableMessageSigning: Boolean = true, // Secure by default
     val messageSigningSecret: String? = null,
-    val maxMessageSizeBytes: Int = 65536,  // 64KB limit
+    val maxMessageSizeBytes: Int = 65536, // 64KB limit
 
     // Redis Resilience Settings
     val subscriptionRetryDelayMs: Long = 5000,

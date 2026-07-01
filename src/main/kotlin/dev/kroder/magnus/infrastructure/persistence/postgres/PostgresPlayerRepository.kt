@@ -2,11 +2,11 @@ package dev.kroder.magnus.infrastructure.persistence.postgres
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.upsert
-import org.jetbrains.exposed.sql.where
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
 /**

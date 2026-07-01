@@ -1,8 +1,8 @@
 package dev.kroder.magnus.infrastructure.security
 
+import java.util.Base64
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import java.util.Base64
 
 /**
  * HMAC-based message signer for authenticating Redis messages.

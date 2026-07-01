@@ -13,9 +13,8 @@ import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
-import java.util.*
+import java.util.UUID
 
 class PersistenceResilienceTest {
 

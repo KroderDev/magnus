@@ -4,14 +4,14 @@ import dev.kroder.magnus.domain.messaging.MessageBus
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
 import io.mockk.mockk
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /**
  * Unit tests for GlobalPlayerListService.

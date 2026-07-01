@@ -3,10 +3,10 @@ package dev.kroder.magnus.infrastructure.messaging
 import org.slf4j.LoggerFactory
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
 import java.io.FileInputStream
 import java.security.KeyStore
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 /**
  * Factory for creating JedisPool instances with optional SSL/TLS support.
@@ -75,12 +75,12 @@ object JedisPoolFactory {
                 port,
                 timeoutMs,
                 password,
-                /* database */ 0,
-                /* clientName */ "magnus",
+                0, // database
+                "magnus", // clientName
                 useSsl,
                 sslContext.socketFactory,
                 sslContext.defaultSSLParameters,
-                /* hostnameVerifier */ null
+                null // hostnameVerifier
             )
         } else {
             logger.info("Creating JedisPool for $host:$port (SSL disabled)")

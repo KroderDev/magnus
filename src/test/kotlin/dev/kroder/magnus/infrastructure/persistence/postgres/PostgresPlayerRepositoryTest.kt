@@ -4,7 +4,6 @@ import dev.kroder.magnus.domain.model.PlayerData
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeAll
@@ -45,12 +44,14 @@ class PostgresPlayerRepositoryTest {
             // Clean up table before each test
             PlayerDataTable.deleteAll()
         }
-        repository = PostgresPlayerRepository(Database.connect(
-            url = postgres.jdbcUrl,
-            driver = "org.postgresql.Driver",
-            user = postgres.username,
-            password = postgres.password
-        ))
+        repository = PostgresPlayerRepository(
+            Database.connect(
+                url = postgres.jdbcUrl,
+                driver = "org.postgresql.Driver",
+                user = postgres.username,
+                password = postgres.password
+            )
+        )
     }
 
     private val testUuid = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")

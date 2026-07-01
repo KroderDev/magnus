@@ -64,19 +64,18 @@ class BackupRecoveryService(
                 } else {
                     // DB has data. Compare timestamps.
                     if (backupData.lastUpdated > dbData.lastUpdated) {
-                        logger.info(
-                            "Recovering ${backupData.username}: Local backup is NEWER " +
+                    logger.info(
+                        "Recovering ${backupData.username}: Local backup is NEWER " +
                             "(${backupData.lastUpdated} > ${dbData.lastUpdated}). Overwriting DB."
-                        )
+                    )
                         primaryRepo.save(backupData)
                         localBackup.deleteFile(backupData.uuid)
                     } else {
                         logger.info("Discarding backup for ${backupData.username}: DB is newer or equal.")
                         localBackup.deleteFile(backupData.uuid) // Obsolete backup
-                    }
                 }
-
-            } catch (e: Exception) {
+            }
+        } catch (e: Exception) {
                 logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
             }
         }

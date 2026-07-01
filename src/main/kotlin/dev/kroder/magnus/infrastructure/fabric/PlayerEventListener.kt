@@ -68,4 +68,3 @@ class PlayerEventListener(
         syncService.releaseCache(player.uuid)
     }
 }
-

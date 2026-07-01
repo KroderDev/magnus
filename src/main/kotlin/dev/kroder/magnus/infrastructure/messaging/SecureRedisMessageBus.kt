@@ -12,6 +12,11 @@ import redis.clients.jedis.JedisPubSub
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
+private const val DEFAULT_MAX_PAYLOAD_SIZE = 65536
+private const val DEFAULT_RETRY_DELAY_MS = 5000L
+private const val DEFAULT_MAX_RETRIES = 10
+private const val MAX_BACKOFF_EXPONENT = 5
+
 /**
  * Hardened Redis MessageBus with security and resilience features.
  *
@@ -30,13 +35,6 @@ class SecureRedisMessageBus(
     private val maxPayloadSize: Int = DEFAULT_MAX_PAYLOAD_SIZE,
     private val retryDelayMs: Long = DEFAULT_RETRY_DELAY_MS,
     private val maxRetries: Int = DEFAULT_MAX_RETRIES
-
-    companion object {
-        private const val DEFAULT_MAX_PAYLOAD_SIZE = 65536
-        private const val DEFAULT_RETRY_DELAY_MS = 5000L
-        private const val DEFAULT_MAX_RETRIES = 10
-        private const val MAX_BACKOFF_EXPONENT = 5
-    }
 ) : MessageBus {
 
     private val logger = LoggerFactory.getLogger("magnus-redis-bus")
@@ -135,8 +133,9 @@ class SecureRedisMessageBus(
 
         // Exponential backoff: 5s, 10s, 20s, 40s, 80s, 160s (capped at 32x base delay)
         val delay = retryDelayMs * (1 shl minOf(attempt, MAX_BACKOFF_EXPONENT))
-        logger.warn("Subscription to '${subscription.channel}' failed (attempt $nextAttempt/$maxRetries). " +
-                    "Retrying in ${delay}ms. Error: ${e.message}")
+        val warnMessage = "Subscription to '${subscription.channel}' failed (attempt $nextAttempt/$maxRetries). " +
+            "Retrying in ${delay}ms. Error: ${e.message}"
+        logger.warn(warnMessage)
 
         scope.launch {
             delay(delay)

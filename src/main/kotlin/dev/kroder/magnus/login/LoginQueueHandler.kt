@@ -3,7 +3,6 @@ package dev.kroder.magnus.login
 import dev.kroder.magnus.Magnus
 import dev.kroder.magnus.mixin.ServerLoginNetworkHandlerAccessor
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents
-import net.minecraft.text.Text
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -41,7 +40,7 @@ object LoginQueueHandler {
                 return@register
             }
 
-            Magnus.logger.info("LoginQueueHandler: Checking session lock for player ${profile.name} (${playerId})")
+            Magnus.logger.info("LoginQueueHandler: Checking session lock for player ${profile.name} ($playerId)")
 
             // Register a synchronization task that waits for the session lock to be released
             synchronizer.waitFor(CompletableFuture.supplyAsync {
@@ -71,7 +70,7 @@ object LoginQueueHandler {
                     )
                     throw RuntimeException(
                         "Session Sync Timeout: Could not acquire lock after ${MAX_WAIT_MS / MS_PER_SECOND}s. " +
-                        "Please try again."
+                            "Please try again."
                     )
                 }
 
@@ -79,7 +78,7 @@ object LoginQueueHandler {
                 if ((elapsed / MS_PER_SECOND) % LOG_INTERVAL_SECONDS == 0L && elapsed > 0) {
                     Magnus.logger.debug(
                         "LoginQueueHandler: Waiting for session unlock for $playerName... " +
-                        "(${elapsed / MS_PER_SECOND}s)"
+                            "(${elapsed / MS_PER_SECOND}s)"
                     )
                 }
 
@@ -88,7 +87,6 @@ object LoginQueueHandler {
 
             Magnus.logger.info("LoginQueueHandler: Session lock cleared for $playerName, proceeding with login")
             return null
-
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
             throw RuntimeException("Login synchronization interrupted", e)

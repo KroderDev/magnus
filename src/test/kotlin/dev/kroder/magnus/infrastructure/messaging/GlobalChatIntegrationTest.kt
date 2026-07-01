@@ -1,10 +1,9 @@
 package dev.kroder.magnus.infrastructure.messaging
 
+import com.redis.testcontainers.RedisContainer
 import dev.kroder.magnus.domain.model.ChatMessage
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -15,9 +14,10 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import com.redis.testcontainers.RedisContainer
 
 /**
  * Integration tests for GlobalChatModule using real Redis via Testcontainers.

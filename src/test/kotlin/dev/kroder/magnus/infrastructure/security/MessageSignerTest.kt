@@ -52,7 +52,7 @@ class MessageSignerTest {
         val originalMessage = """{"test": "hello world"}"""
 
         // Create a message with old timestamp manually
-        val oldTimestamp = System.currentTimeMillis() - 60_000  // 60 seconds old
+        val oldTimestamp = System.currentTimeMillis() - 60_000 // 60 seconds old
         val dataToSign = "$oldTimestamp|$originalMessage"
 
         // Use reflection to access private method for testing
