@@ -23,10 +23,13 @@ class RedisPlayerRepository(
 
     override fun save(data: PlayerData) {
         val value = json.encodeToString(data)
-        
+
         // Security check: Payload size limit (R-03)
         if (value.length > maxPayloadSize) {
-            logger.warn("Rejecting oversized persistence snapshot for ${data.username} (${data.uuid}): ${value.length} bytes. Max allowed: $maxPayloadSize")
+            logger.warn(
+                "Rejecting oversized persistence snapshot for ${data.username} (${data.uuid}): " +
+                "${value.length} bytes. Max allowed: $maxPayloadSize"
+            )
             return
         }
 

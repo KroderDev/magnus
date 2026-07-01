@@ -12,6 +12,8 @@ import java.util.Optional
 
 object NbtCompat {
 
+    private const val DEFAULT_NBT_LIST_TYPE = 10
+
     fun getExhaustion(manager: Any): Float {
         return try {
             val field = manager.javaClass.getDeclaredField("exhaustion")
@@ -50,7 +52,7 @@ object NbtCompat {
             val method = NbtCompound::class.java.getMethod(
                 "getList", String::class.java, Int::class.javaPrimitiveType
             )
-            method.invoke(compound, key, 10) as NbtList
+            method.invoke(compound, key, DEFAULT_NBT_LIST_TYPE) as NbtList
         }
     }
 

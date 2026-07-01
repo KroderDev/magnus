@@ -53,7 +53,7 @@ class ModuleManager {
             logger.debug("Cannot disable module '$id': Not active.")
             return
         }
-        
+
         val module = modules[id] ?: return
 
         try {

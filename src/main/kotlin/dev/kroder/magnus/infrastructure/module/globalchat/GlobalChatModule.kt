@@ -22,7 +22,7 @@ class GlobalChatModule(
     override val name = "Global Chat"
 
     private val logger = LoggerFactory.getLogger("magnus-global-chat")
-    
+
     private lateinit var chatService: GlobalChatService
     private lateinit var chatListener: ChatEventListener
     private var server: MinecraftServer? = null

@@ -16,7 +16,7 @@ import dev.kroder.magnus.infrastructure.module.inventorysync.InventorySyncModule
 /**
  * Main entry point for the Magnus Sync mod.
  * This class follows the "Wiring" or "Composition Root" pattern, connecting all layers.
- * 
+ *
  * Functional Limits:
  * - Initialization is synchronous; if DB is down, the server might hang or crash.
  * - This class should stay lean, only handling dependency injection and lifecycle.
@@ -24,7 +24,7 @@ import dev.kroder.magnus.infrastructure.module.inventorysync.InventorySyncModule
 object Magnus : ModInitializer {
     internal val logger = LoggerFactory.getLogger("magnus")
     private val config = dev.kroder.magnus.infrastructure.config.ConfigLoader.load()
-    
+
     // Exposed services for Mixins
     lateinit var syncService: SyncService
         private set
@@ -49,12 +49,15 @@ object Magnus : ModInitializer {
             }
             logger.info("Persistence: PostgreSQL connected and schema verified. [OK]")
         } catch (e: Exception) {
-            logger.warn("Persistence: PostgreSQL connection FAILED. Server starting in RESILIENCE MODE (Offline). Reason: ${e.message}")
+            logger.warn(
+                "Persistence: PostgreSQL connection FAILED. Server starting in RESILIENCE MODE (Offline). " +
+                "Reason: ${e.message}"
+            )
         }
 
         // 2. Initialize Redis (Infrastructure)
         logger.info("Cache: Initializing Redis...")
-        
+
         val jedisPool = dev.kroder.magnus.infrastructure.messaging.JedisPoolFactory.create(
             host = config.redisHost,
             port = config.redisPort,
@@ -83,11 +86,14 @@ object Magnus : ModInitializer {
         val redisRepo = RedisPlayerRepository(jedisPool, maxPayloadSize = config.maxMessageSizeBytes)
         val compositeRepo = CachedPlayerRepository(cache = redisRepo, persistentStore = postgresRepo)
 
-        
+
         // Resilience Layer
         val backupsDir = net.fabricmc.loader.api.FabricLoader.getInstance().configDir.resolve("magnus/backups").toFile()
         val localBackupRepo = dev.kroder.magnus.infrastructure.persistence.local.LocalBackupRepository(backupsDir)
-        val resilientRepo = dev.kroder.magnus.infrastructure.persistence.ResilientPlayerRepository(compositeRepo, localBackupRepo)
+        val resilientRepo = dev.kroder.magnus.infrastructure.persistence.ResilientPlayerRepository(
+            compositeRepo,
+            localBackupRepo
+        )
 
         // 4. Create Application Services
         val lockManager = if (config.enableSessionLock) {
@@ -97,24 +103,27 @@ object Magnus : ModInitializer {
         }
 
         syncService = SyncService(resilientRepo, lockManager)
-        
+
         val recoveryService = dev.kroder.magnus.application.BackupRecoveryService(localBackupRepo, compositeRepo)
         recoveryService.start()
 
         // 5. Initialize Modular System with Secure MessageBus
         val moduleManager = dev.kroder.magnus.infrastructure.module.ModuleManager()
-        
+
         // Create message signer if signing is enabled
         val messageSigner = if (config.enableMessageSigning && !config.messageSigningSecret.isNullOrEmpty()) {
             logger.info("MessageBus: Message signing is ENABLED")
             dev.kroder.magnus.infrastructure.security.MessageSigner(config.messageSigningSecret)
         } else {
             if (config.enableMessageSigning) {
-                logger.warn("MessageBus: enableMessageSigning is true but no messageSigningSecret provided! Signing disabled.")
+                logger.warn(
+                    "MessageBus: enableMessageSigning is true but no messageSigningSecret provided! " +
+                    "Signing disabled."
+                )
             }
             null
         }
-        
+
         val messageBus = dev.kroder.magnus.infrastructure.messaging.SecureRedisMessageBus(
             jedisPool = jedisPool,
             signer = messageSigner,
@@ -122,7 +131,7 @@ object Magnus : ModInitializer {
             retryDelayMs = config.subscriptionRetryDelayMs,
             maxRetries = config.maxSubscriptionRetries
         )
-        
+
         // Register modules
         // Register Inventory Sync module (enabled by default)
         if (config.enableInventorySync) {
@@ -132,7 +141,7 @@ object Magnus : ModInitializer {
             moduleManager.registerModule(inventorySyncModule)
             moduleManager.enableModule("inventory-sync")
         }
-        
+
         if (config.enableGlobalChat) {
             val globalChatModule = dev.kroder.magnus.infrastructure.module.globalchat.GlobalChatModule(
                 messageBus = messageBus,
@@ -141,12 +150,13 @@ object Magnus : ModInitializer {
             moduleManager.registerModule(globalChatModule)
             moduleManager.enableModule("global-chat")
         }
-        
+
         if (config.enableGlobalPlayerList) {
-            val globalPlayerListModule = dev.kroder.magnus.infrastructure.module.globalplayerlist.GlobalPlayerListModule(
-                messageBus = messageBus,
-                serverName = config.serverName
-            )
+            val globalPlayerListModule =
+                dev.kroder.magnus.infrastructure.module.globalplayerlist.GlobalPlayerListModule(
+                    messageBus = messageBus,
+                    serverName = config.serverName
+                )
             moduleManager.registerModule(globalPlayerListModule)
             moduleManager.enableModule("global-player-list")
         }
@@ -159,7 +169,7 @@ object Magnus : ModInitializer {
         // 8. Graceful Shutdown Hook
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPING.register { server ->
             logger.info("Magnus: Stopping server - ensuring all player data is saved...")
-            
+
             try {
                 // Force save online players through the InventorySyncModule
                 val invSync = moduleManager.getModule<InventorySyncModule>("inventory-sync")

@@ -3,8 +3,11 @@ package dev.kroder.magnus.infrastructure.module
 import dev.kroder.magnus.domain.module.MagnusModule
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.returns
+import io.mockk.throws
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -58,7 +61,7 @@ class ModuleManagerTest {
     @Test
     fun `should handle error during onEnable gracefully`() {
         every { mockModule.onEnable() } throws RuntimeException("Enable failed")
-        
+
         moduleManager.registerModule(mockModule)
         moduleManager.enableModule("test-module")
 
@@ -73,7 +76,7 @@ class ModuleManagerTest {
 
         moduleManager.registerModule(mockModule)
         moduleManager.registerModule(secondModule)
-        
+
         moduleManager.enableModule("test-module")
         moduleManager.enableModule("second-module")
 

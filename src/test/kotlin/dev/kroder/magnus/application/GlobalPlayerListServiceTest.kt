@@ -3,10 +3,13 @@ package dev.kroder.magnus.application
 import dev.kroder.magnus.domain.messaging.MessageBus
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
-import io.mockk.*
+import io.mockk.mockk
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -18,7 +21,7 @@ class GlobalPlayerListServiceTest {
     private lateinit var messageBus: MessageBus
     private lateinit var service: GlobalPlayerListService
     private val json = Json { ignoreUnknownKeys = true }
-    
+
     private val serverName = "test-server"
 
     @BeforeEach
@@ -127,7 +130,7 @@ class GlobalPlayerListServiceTest {
         assertDoesNotThrow {
             service.onHeartbeatReceived("invalid json {{{")
         }
-        
+
         // Map should remain functional
         assertEquals(0, service.getGlobalPlayerCount())
     }
@@ -140,7 +143,7 @@ class GlobalPlayerListServiceTest {
             players = listOf(PlayerEntry("uuid", "StalePlayer")),
             timestamp = System.currentTimeMillis() - 15_000 // 15 seconds ago
         )
-        
+
         service.onHeartbeatReceived(json.encodeToString(staleInfo))
 
         // Now add a fresh entry to trigger cleanup
@@ -151,7 +154,7 @@ class GlobalPlayerListServiceTest {
         service.onHeartbeatReceived(json.encodeToString(freshInfo))
 
         val playersByServer = service.getPlayersByServer()
-        
+
         // Stale entry should be removed, fresh should remain
         assertFalse(playersByServer.containsKey("stale-server"))
         assertTrue(playersByServer.containsKey("fresh-server"))

@@ -11,7 +11,7 @@ import java.util.*
 /**
  * Adapter that bridges the Minecraft API with our Domain models.
  * It handles the extraction of data from [ServerPlayerEntity] and the injection of data back into it.
- * 
+ *
  * Functional Limits:
  * - NBT data is serialized to Base64 for database storage.
  */

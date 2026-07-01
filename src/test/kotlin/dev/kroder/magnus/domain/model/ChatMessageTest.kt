@@ -2,7 +2,8 @@ package dev.kroder.magnus.domain.model
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ChatMessageTest {
@@ -27,14 +28,14 @@ class ChatMessageTest {
     @Test
     fun `should set default timestamp when not provided`() {
         val before = System.currentTimeMillis()
-        
+
         val message = ChatMessage(
             serverName = "test",
             playerUuid = "uuid",
             playerName = "Player",
             rawMessage = "Test"
         )
-        
+
         val after = System.currentTimeMillis()
 
         assertTrue(message.timestamp >= before)

@@ -9,9 +9,13 @@ import java.util.UUID
  * Prevents a player from joining a server if their data is still being saved on another.
  */
 class LockManager(private val jedisPool: JedisPool) {
+
     private val logger = LoggerFactory.getLogger("magnus-lock")
-    private val LOCK_PREFIX = "magnus:lock:"
-    private val LOCK_TTL_SECONDS = 30L // Safety net in case of crash
+
+    companion object {
+        private const val LOCK_PREFIX = "magnus:lock:"
+        private const val LOCK_TTL_SECONDS = 30L
+    }
 
     /**
      * Attempts to acquire a lock for the given player.

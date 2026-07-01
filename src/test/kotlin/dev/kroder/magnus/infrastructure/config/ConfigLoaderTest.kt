@@ -59,7 +59,7 @@ class ConfigLoaderTest {
         // Then
         // Returns default object
         assertEquals("jdbc:postgresql://localhost:5432/magnus", config.postgresUrl)
-        
+
         // File content should remain broken (user needs to fix it manually)
         assertEquals(brokenContent, configFile.readText())
     }

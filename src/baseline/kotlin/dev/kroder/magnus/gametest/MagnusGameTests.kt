@@ -21,7 +21,7 @@ class MagnusGameTests : FabricGameTest {
         val server = context.world.server
         val world = context.world
         val profile = GameProfile(UUID.randomUUID(), "TestPlayer")
-        
+
         // In 1.21.1, constructor might require SyncedClientOptions or similar
         val clientOptions = SyncedClientOptions.createDefault()
         val player = ServerPlayerEntity(server, world, profile, clientOptions)
@@ -38,11 +38,18 @@ class MagnusGameTests : FabricGameTest {
         val snapshot: PlayerData = FabricPlayerAdapter.toDomain(player)
 
         // 4. Verification Check 1: Snapshot matches Player
-        if (snapshot.health != 10f) throw RuntimeException("Snapshot Health mismatch: expected 10.0, got ${snapshot.health}")
-        if (snapshot.foodLevel != 15) throw RuntimeException("Snapshot Food mismatch: expected 15, got ${snapshot.foodLevel}")
-        if (snapshot.experienceLevel != 5) throw RuntimeException("Snapshot XP Level mismatch: expected 5, got ${snapshot.experienceLevel}")
-        if (!snapshot.inventoryNbt.contains("id:\"minecraft:diamond\",count:64")) { 
-             // Basic NBT check (might need more robust check if format differs, but NbtIo writes descriptive JSON-like internal string sometimes or we rely on it containing the ID)
+        if (snapshot.health != 10f) throw RuntimeException(
+            "Snapshot Health mismatch: expected 10.0, got ${snapshot.health}"
+        )
+        if (snapshot.foodLevel != 15) throw RuntimeException(
+            "Snapshot Food mismatch: expected 15, got ${snapshot.foodLevel}"
+        )
+        if (snapshot.experienceLevel != 5) throw RuntimeException(
+            "Snapshot XP Level mismatch: expected 5, got ${snapshot.experienceLevel}"
+        )
+        if (!snapshot.inventoryNbt.contains("id:\"minecraft:diamond\",count:64")) {
+             // Basic NBT check (might need more robust check if format differs, but NbtIo writes descriptive
+             // JSON-like internal string sometimes or we rely on it containing the ID)
              // Actually, serializeNbt returns Base64. We can't check string content directly easily.
              // We'll skip string check and rely on Roundtrip.
         }
@@ -56,14 +63,20 @@ class MagnusGameTests : FabricGameTest {
         FabricPlayerAdapter.applyToPlayer(player, snapshot)
 
         // 7. Verification Check 2: Player restored correctly
-        if (player.health != 10f) throw RuntimeException("Restored Health mismatch: expected 10.0, got ${player.health}")
-        if (player.hungerManager.foodLevel != 15) throw RuntimeException("Restored Food mismatch: expected 15, got ${player.hungerManager.foodLevel}")
-        
+        if (player.health != 10f) throw RuntimeException(
+            "Restored Health mismatch: expected 10.0, got ${player.health}"
+        )
+        if (player.hungerManager.foodLevel != 15) throw RuntimeException(
+            "Restored Food mismatch: expected 15, got ${player.hungerManager.foodLevel}"
+        )
+
         val stack = player.inventory.getStack(0)
         if (!stack.isOf(Items.DIAMOND) || stack.count != 64) {
-             throw RuntimeException("Restored Inventory mismatch: expected 64 Diamond, got ${stack.count} ${stack.item}")
+             throw RuntimeException(
+                 "Restored Inventory mismatch: expected 64 Diamond, got ${stack.count} ${stack.item}"
+             )
         }
-        
+
         context.complete()
     }
 }

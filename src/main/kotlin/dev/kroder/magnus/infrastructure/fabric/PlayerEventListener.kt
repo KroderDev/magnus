@@ -8,7 +8,7 @@ import net.minecraft.text.Text
 
 /**
  * Fabric event listeners that drive the synchronization process.
- * 
+ *
  * Functional Limits:
  * - Join: Data is loaded from storage and applied to the player.
  * - Disconnect: Data is captured from the player and saved to storage.
@@ -34,7 +34,7 @@ class PlayerEventListener(
         val player = handler.player
         try {
             val data = syncService.loadPlayerData(player.uuid)
-            
+
             if (data != null) {
                 // Apply the loaded data to the live player instance
                 FabricPlayerAdapter.applyToPlayer(player, data)
@@ -44,7 +44,11 @@ class PlayerEventListener(
             handler.disconnect(net.minecraft.text.Text.literal("§cSession Locked: Please try again in a few seconds."))
         } catch (e: dev.kroder.magnus.domain.exception.DataUnavailableException) {
             // CRITICAL: DB is down and no backup. Kick to prevent data loss.
-            handler.disconnect(net.minecraft.text.Text.literal("§cSync Error: Database Unavailable.\n§7Please try again later. Your data is safe."))
+            handler.disconnect(
+                net.minecraft.text.Text.literal(
+                    "§cSync Error: Database Unavailable.\n§7Please try again later. Your data is safe."
+                )
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             // Optional: Kick on generic error too?
@@ -54,10 +58,10 @@ class PlayerEventListener(
     private fun onPlayerLeave(handler: ServerPlayNetworkHandler) {
         val player = handler.player
         val snapshot = FabricPlayerAdapter.toDomain(player)
-        
+
         // Save the snapshot to persistent and cache storage
         syncService.savePlayerData(snapshot)
-        
+
         // Optional: In a multi-proxy setup, we might NOT want to release cache immediately
         // if we know they are going to another server in the same cluster.
         // For now, we release it to ensure freshness.

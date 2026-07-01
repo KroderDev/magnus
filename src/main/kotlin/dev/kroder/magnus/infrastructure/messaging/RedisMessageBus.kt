@@ -65,7 +65,7 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
 
     override fun close() {
         logger.info("Closing all Redis subscriptions...")
-        listeners.values.forEach { 
+        listeners.values.forEach {
             try {
                 if (it.isSubscribed) it.unsubscribe()
             } catch (e: Exception) {

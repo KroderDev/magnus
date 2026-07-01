@@ -2,7 +2,9 @@ package dev.kroder.magnus.infrastructure.persistence.postgres
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.upsert
+import org.jetbrains.exposed.sql.where
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
@@ -10,7 +12,7 @@ import java.util.UUID
 /**
  * Implementation of [PlayerRepository] using PostgreSQL and Exposed.
  * This adapter handles the persistence of player data to a relational database.
- * 
+ *
  * Functional Limits:
  * - Block transactions are used, which may impact performance if not managed.
  * - This implementation stores data permanently.

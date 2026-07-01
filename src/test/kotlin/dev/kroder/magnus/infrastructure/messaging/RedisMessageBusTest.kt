@@ -1,7 +1,12 @@
 package dev.kroder.magnus.infrastructure.messaging
 
-import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.returns
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
@@ -15,14 +20,14 @@ class RedisMessageBusTest {
     @Test
     fun `should publish message`() {
         val latch = CountDownLatch(1)
-        
+
         every { jedisPool.resource } returns jedis
         every { jedis.publish(any<String>(), any<String>()) } answers {
             latch.countDown()
             1L
         }
         every { jedis.close() } just Runs
-        
+
         val bus = RedisMessageBus(jedisPool)
 
         bus.publish("test-channel", "hello world")

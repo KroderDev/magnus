@@ -8,7 +8,7 @@ import java.util.UUID
 /**
  * A composite implementation of [PlayerRepository] that coordinates between a cache (Redis)
  * and a persistent store (Postgres).
- * 
+ *
  * Resilience:
  * - Cache operations are isolated. Failure in Redis will not block the Persistent Store.
  */
@@ -33,24 +33,28 @@ class CachedPlayerRepository(
 
     override fun findByUuid(uuid: UUID): PlayerData? {
         // 1. Try the cache first (Isolated)
+        var result: PlayerData? = null
         try {
-            val cached = cache.findByUuid(uuid)
-            if (cached != null) return cached
+            result = cache.findByUuid(uuid)
         } catch (e: Exception) {
             logger.warn("Cache load failed for $uuid: ${e.message}")
         }
 
-        // 2. Load from persistent store
-        val persistent = persistentStore.findByUuid(uuid) ?: return null
+        // 2. Load from persistent store if cache missed
+        if (result == null) {
+            result = persistentStore.findByUuid(uuid)
+        }
 
         // 3. Update cache for next time (Isolated)
-        try {
-            cache.save(persistent)
-        } catch (e: Exception) {
-            logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
+        if (result != null) {
+            try {
+                cache.save(result)
+            } catch (e: Exception) {
+                logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
+            }
         }
-        
-        return persistent
+
+        return result
     }
 
     override fun deleteCache(uuid: UUID) {

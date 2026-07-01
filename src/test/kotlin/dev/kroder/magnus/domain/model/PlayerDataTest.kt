@@ -9,8 +9,8 @@ import java.util.UUID
 
 class PlayerDataTest {
 
-    private val json = Json { 
-        prettyPrint = true 
+    private val json = Json {
+        prettyPrint = true
         allowSpecialFloatingPointValues = true
     }
 

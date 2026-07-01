@@ -11,7 +11,7 @@ import java.util.UUID
 /**
  * Repository implementation that saves data to the local file system.
  * Acts as a "Last Line of Defense" (Backup) when databases fail.
- * 
+ *
  * Functional Limits:
  * - Stores files in config/magnus/backups/<uuid>.json
  * - Not performant for normal operations, strictly for emergency/recovery.
@@ -48,7 +48,7 @@ class LocalBackupRepository(
             val file = File(rootDir, "${data.uuid}.json")
             val content = json.encodeToString(PlayerData.serializer(), data)
             Files.writeString(file.toPath(), content)
-            
+
             // Mark as dirty in memory
             pendingBackups.add(data.uuid)
         } catch (e: IOException) {
@@ -58,35 +58,36 @@ class LocalBackupRepository(
 
     override fun findByUuid(uuid: UUID): PlayerData? {
         // Optimization: If not in dirty set, don't touch disk
-        if (!pendingBackups.contains(uuid)) return null
+        var result: PlayerData? = null
 
-        val file = File(rootDir, "$uuid.json")
-        if (!file.exists()) {
-            // Should not happen if set aligns with disk, but safe guard
-            pendingBackups.remove(uuid)
-            return null
+        if (pendingBackups.contains(uuid)) {
+            val file = File(rootDir, "$uuid.json")
+            if (file.exists()) {
+                try {
+                    val content = Files.readString(file.toPath())
+                    result = json.decodeFromString(PlayerData.serializer(), content)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                pendingBackups.remove(uuid)
+            }
         }
 
-        return try {
-            val content = Files.readString(file.toPath())
-            json.decodeFromString(PlayerData.serializer(), content)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+        return result
     }
 
     override fun deleteCache(uuid: UUID) {
         // We do NOT delete local backups on "cache release".
     }
-    
+
     /**
      * Checks if a backup exists without touching the disk (O(1)).
      */
     fun hasBackup(uuid: UUID): Boolean {
         return pendingBackups.contains(uuid)
     }
-    
+
     fun findAllStartups(): List<PlayerData> {
         // Use the index to find files faster or just scan directory (safer for janitor)
         // For Janitor, we stick to directory scan to be source of truth
@@ -100,7 +101,7 @@ class LocalBackupRepository(
             }
         }
     }
-    
+
     fun deleteFile(uuid: UUID) {
         val file = File(rootDir, "$uuid.json")
         if (file.exists()) {

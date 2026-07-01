@@ -51,21 +51,21 @@ class GlobalChatService(
      */
     fun onMessageReceived(payload: String, server: MinecraftServer?) {
         if (server == null) return
-        
+
         try {
             val message = json.decodeFromString<ChatMessage>(payload)
-            
+
             // Ignore messages from this server to prevent echo
             if (message.serverName == serverName) return
-            
+
             // Broadcast raw message to all local players
             // The message is sent as-is to preserve any formatting from the source server
             val text = Text.literal("<${message.playerName}> ${message.rawMessage}")
-            
+
             server.playerManager.playerList.forEach { player ->
                 player.sendMessage(text, false)
             }
-            
+
             logger.debug("Received chat from ${message.serverName}: ${message.playerName}")
         } catch (e: Exception) {
             logger.error("Failed to process incoming chat message: ${e.message}", e)

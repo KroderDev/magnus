@@ -9,6 +9,8 @@ import java.security.SecureRandom
 import java.util.Base64
 
 object ConfigLoader {
+    private const val SECRET_BYTE_LENGTH = 32
+
     private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 
     fun load(configDir: java.nio.file.Path? = null): MagnusConfig {
@@ -24,7 +26,7 @@ object ConfigLoader {
         return try {
             val content = Files.readString(configFile.toPath())
             val config = json.decodeFromString(MagnusConfig.serializer(), content)
-            
+
             // Auto-generate signing secret if signing is enabled but no secret exists
             if (config.enableMessageSigning && config.messageSigningSecret.isNullOrEmpty()) {
                 val secureConfig = config.copy(messageSigningSecret = generateSecureSecret())
@@ -37,10 +39,10 @@ object ConfigLoader {
             e.printStackTrace()
             // Fallback to default if corrupted, but maybe better to crash or warn?
             // For now, return default but don't overwrite the corrupt file so user can fix it.
-            MagnusConfig() 
+            MagnusConfig()
         }
     }
-    
+
     /**
      * Creates a default config with a pre-generated signing secret.
      * This ensures "secure by default" - new installations have signing enabled.
@@ -50,14 +52,14 @@ object ConfigLoader {
             messageSigningSecret = generateSecureSecret()
         )
     }
-    
+
     /**
      * Generates a cryptographically secure random secret (32 bytes, Base64 encoded).
      * This is suitable for HMAC-SHA256 signing.
      */
     private fun generateSecureSecret(): String {
         val random = SecureRandom()
-        val bytes = ByteArray(32)
+        val bytes = ByteArray(SECRET_BYTE_LENGTH)
         random.nextBytes(bytes)
         return Base64.getEncoder().encodeToString(bytes)
     }

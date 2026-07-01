@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.gen.Accessor
  */
 @Mixin(ServerLoginNetworkHandler::class)
 interface ServerLoginNetworkHandlerAccessor {
-    
+
     @Accessor("profile")
     fun getProfile(): GameProfile?
 }

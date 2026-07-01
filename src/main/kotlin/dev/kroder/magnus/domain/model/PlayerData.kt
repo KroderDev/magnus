@@ -11,7 +11,7 @@ import java.util.UUID
 /**
  * Represents the core data of a player that needs to be synchronized between servers.
  * This is a pure Kotlin data class, independent of the Minecraft API.
- * 
+ *
  * Functional Limits:
  * - This model only stores data that can be serialized and moved across networks.
  * - It does not handle Minecraft-specific objects like [ServerPlayerEntity].

@@ -3,8 +3,15 @@ package dev.kroder.magnus.infrastructure.persistence
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import dev.kroder.magnus.infrastructure.persistence.redis.RedisPlayerRepository
-import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import io.mockk.any
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.returns
+import io.mockk.throws
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
@@ -49,7 +56,7 @@ class PersistenceResilienceTest {
     fun `RedisPlayerRepository should reject oversized payloads`() {
         val pool = mockk<JedisPool>()
         val repo = RedisPlayerRepository(pool, maxPayloadSize = 100)
-        
+
         // Create large username to exceed 100 bytes serialized
         val largeData = createSampleData(username = "A".repeat(200))
 

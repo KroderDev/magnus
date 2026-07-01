@@ -28,25 +28,25 @@ class GlistCommand(
 
     private fun execute(context: CommandContext<ServerCommandSource>): Int {
         val source = context.source
-        
+
         try {
             val totalPlayers = playerListService.getGlobalPlayerCount()
             val playersByServer = playerListService.getPlayersByServer()
-            
+
             // Header
             source.sendFeedback(
                 { Text.literal("§6§l=== Global Player List ===") },
                 false
             )
-            
+
             source.sendFeedback(
                 { Text.literal("§7Total players online: §f$totalPlayers") },
                 false
             )
-            
+
             // Empty line
             source.sendFeedback({ Text.literal("") }, false)
-            
+
             if (playersByServer.isEmpty()) {
                 source.sendFeedback(
                     { Text.literal("§8No servers connected.") },
@@ -61,14 +61,14 @@ class GlistCommand(
                     } else {
                         players.joinToString(", ") { "§f$it" }
                     }
-                    
+
                     source.sendFeedback(
                         { Text.literal("§a$serverName §7[$playerCount]: $playerNames") },
                         false
                     )
                 }
             }
-            
+
             return 1
         } catch (e: Exception) {
             source.sendError(Text.literal("§cError fetching global player list."))

@@ -31,9 +31,15 @@ class MagnusGameTests {
 
         val snapshot: PlayerData = FabricPlayerAdapter.toDomain(player)
 
-        if (snapshot.health != 10f) throw RuntimeException("Snapshot Health mismatch: expected 10.0, got ${snapshot.health}")
-        if (snapshot.foodLevel != 15) throw RuntimeException("Snapshot Food mismatch: expected 15, got ${snapshot.foodLevel}")
-        if (snapshot.experienceLevel != 5) throw RuntimeException("Snapshot XP Level mismatch: expected 5, got ${snapshot.experienceLevel}")
+        if (snapshot.health != 10f) throw RuntimeException(
+            "Snapshot Health mismatch: expected 10.0, got ${snapshot.health}"
+        )
+        if (snapshot.foodLevel != 15) throw RuntimeException(
+            "Snapshot Food mismatch: expected 15, got ${snapshot.foodLevel}"
+        )
+        if (snapshot.experienceLevel != 5) throw RuntimeException(
+            "Snapshot XP Level mismatch: expected 5, got ${snapshot.experienceLevel}"
+        )
 
         player.health = 20f
         player.inventory.clear()
@@ -41,12 +47,18 @@ class MagnusGameTests {
 
         FabricPlayerAdapter.applyToPlayer(player, snapshot)
 
-        if (player.health != 10f) throw RuntimeException("Restored Health mismatch: expected 10.0, got ${player.health}")
-        if (player.hungerManager.foodLevel != 15) throw RuntimeException("Restored Food mismatch: expected 15, got ${player.hungerManager.foodLevel}")
+        if (player.health != 10f) throw RuntimeException(
+            "Restored Health mismatch: expected 10.0, got ${player.health}"
+        )
+        if (player.hungerManager.foodLevel != 15) throw RuntimeException(
+            "Restored Food mismatch: expected 15, got ${player.hungerManager.foodLevel}"
+        )
 
         val stack = player.inventory.getStack(0)
         if (!stack.isOf(Items.DIAMOND) || stack.count != 64) {
-             throw RuntimeException("Restored Inventory mismatch: expected 64 Diamond, got ${stack.count} ${stack.item}")
+             throw RuntimeException(
+                 "Restored Inventory mismatch: expected 64 Diamond, got ${stack.count} ${stack.item}"
+             )
         }
 
         context.complete()

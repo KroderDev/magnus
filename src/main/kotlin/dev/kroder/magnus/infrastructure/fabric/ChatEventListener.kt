@@ -22,7 +22,7 @@ class ChatEventListener(
             try {
                 // Extract raw message content (no formatting to preserve compatibility)
                 val rawText = message.content.string
-                
+
                 chatService.publishMessage(
                     playerUuid = sender.uuid.toString(),
                     playerName = sender.gameProfile.name,
@@ -32,7 +32,7 @@ class ChatEventListener(
                 logger.error("Failed to process chat message: ${e.message}", e)
             }
         }
-        
+
         logger.info("Chat event listener registered")
     }
 }
