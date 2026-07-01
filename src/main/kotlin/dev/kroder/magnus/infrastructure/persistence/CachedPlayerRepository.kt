@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.persistence
 
 import dev.kroder.magnus.domain.model.PlayerData
@@ -24,7 +26,6 @@ class CachedPlayerRepository(
         try {
             cache.save(data)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Cache save failed for ${data.uuid}: ${e.message}")
         }
@@ -39,7 +40,6 @@ class CachedPlayerRepository(
         try {
             result = cache.findByUuid(uuid)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Cache load failed for $uuid: ${e.message}")
         }
@@ -54,7 +54,6 @@ class CachedPlayerRepository(
             try {
                 cache.save(result)
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
             }
@@ -67,7 +66,6 @@ class CachedPlayerRepository(
         try {
             cache.deleteCache(uuid)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid: ${e.message}")
         }

@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.messaging
 
 import dev.kroder.magnus.domain.messaging.MessageBus
@@ -58,7 +60,6 @@ class SecureRedisMessageBus(
                     jedis.publish(channel, payload)
                 }
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to publish to '$channel': ${e.message}", e)
             }
@@ -100,7 +101,6 @@ class SecureRedisMessageBus(
 
                     subscription.callback(payload)
                 }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.error("Error handling message on '$ch': ${e.message}", e)
                 }
@@ -116,7 +116,6 @@ class SecureRedisMessageBus(
                     jedis.subscribe(pubSub, subscription.channel)
                 }
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 if (!isShuttingDown.get()) {
                     handleSubscriptionFailure(subscription, attempt, e)
@@ -160,7 +159,6 @@ class SecureRedisMessageBus(
                     if (it.isSubscribed) it.unsubscribe()
                 }
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Error unsubscribing from '${subscription.channel}': ${e.message}")
             }

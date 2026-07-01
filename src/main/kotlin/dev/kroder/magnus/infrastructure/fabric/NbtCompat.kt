@@ -1,6 +1,6 @@
-package dev.kroder.magnus.infrastructure.fabric
-
 @file:Suppress("TooGenericExceptionCaught", "SwallowedException", "TooManyFunctions")
+
+package dev.kroder.magnus.infrastructure.fabric
 
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.inventory.EnderChestInventory

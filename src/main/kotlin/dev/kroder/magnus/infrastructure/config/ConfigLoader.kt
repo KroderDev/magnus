@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.config
 
 import kotlinx.serialization.encodeToString
@@ -41,7 +43,6 @@ object ConfigLoader {
                 config
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Failed to load config, using defaults", e)
             // Fallback to default if corrupted, but maybe better to crash or warn?
@@ -76,7 +77,6 @@ object ConfigLoader {
             val content = json.encodeToString(MagnusConfig.serializer(), config)
             Files.writeString(configFile.toPath(), content)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Failed to save config file", e)
         }

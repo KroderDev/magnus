@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
@@ -49,7 +51,6 @@ class GlobalPlayerListService(
                 try {
                     publishHeartbeat(server)
                 }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.error("Heartbeat failed: ${e.message}", e)
                 }
@@ -100,7 +101,6 @@ class GlobalPlayerListService(
             serverPlayers[info.serverName] = info
             cleanupStaleEntries()
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Failed to process heartbeat: ${e.message}", e)
         }

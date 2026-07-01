@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus
 
 import dev.kroder.magnus.application.SyncService
@@ -50,7 +52,6 @@ object Magnus : ModInitializer {
             }
             logger.info("Persistence: PostgreSQL connected and schema verified. [OK]")
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn(
                 "Persistence: PostgreSQL connection FAILED. Server starting in RESILIENCE MODE (Offline). " +
@@ -81,7 +82,6 @@ object Magnus : ModInitializer {
                 }
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Cache: Redis connection FAILED. Performance will be degraded. Reason: ${e.message}")
         }
@@ -179,7 +179,6 @@ object Magnus : ModInitializer {
                 val invSync = moduleManager.getModule<InventorySyncModule>("inventory-sync")
                 invSync?.forceSaveAllPlayers(server.playerManager.playerList)
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Magnus: Error during forced player data save!", e)
             }
@@ -192,7 +191,6 @@ object Magnus : ModInitializer {
                 jedisPool.close()
                 logger.info("Magnus: Services stopped cleanly.")
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Magnus: Error during shutdown!", e)
             }

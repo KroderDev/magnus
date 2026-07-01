@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.persistence
 
 import dev.kroder.magnus.domain.exception.DataUnavailableException
@@ -24,7 +26,6 @@ class ResilientPlayerRepository(
         try {
             primary.save(data)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error(
                 "Primary repository failed to save player ${data.username} (${data.uuid}). " +
@@ -35,7 +36,6 @@ class ResilientPlayerRepository(
                 backup.save(data)
                 logger.warn("Saved player ${data.username} to local backup successfully.")
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (ex: Exception) {
                 logger.error("CRITICAL: Failed to save to local backup too!", ex)
             }
@@ -54,7 +54,7 @@ class ResilientPlayerRepository(
         try {
             remoteData = primary.findByUuid(uuid)
         }
-        @Suppress("TooGenericExceptionCaught")`n        catch (e: Exception) {
+        catch (e: Exception) {
             remoteError = e
             logger.error("Primary repository failed to load data for $uuid. (Has Local: $hasLocalBackup)", e)
         }
@@ -91,7 +91,6 @@ class ResilientPlayerRepository(
         try {
             primary.deleteCache(uuid)
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid", e)
         }

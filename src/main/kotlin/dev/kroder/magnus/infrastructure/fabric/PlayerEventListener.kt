@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.fabric
 
 import dev.kroder.magnus.application.SyncService
@@ -39,10 +41,10 @@ class PlayerEventListener(
                 // Apply the loaded data to the live player instance
                 FabricPlayerAdapter.applyToPlayer(player, data)
             }
-        } catch (@Suppress("SwallowedException") e: dev.kroder.magnus.domain.exception.SessionLockedException) {
+        } catch (e: dev.kroder.magnus.domain.exception.SessionLockedException) {
             // The Mixin should prevent this from happening, but as a safety net:
             handler.disconnect(net.minecraft.text.Text.literal("§cSession Locked: Please try again in a few seconds."))
-        } catch (@Suppress("SwallowedException") e: dev.kroder.magnus.domain.exception.DataUnavailableException) {
+        } catch (e: dev.kroder.magnus.domain.exception.DataUnavailableException) {
             // CRITICAL: DB is down and no backup. Kick to prevent data loss.
             handler.disconnect(
                 net.minecraft.text.Text.literal(
@@ -50,7 +52,7 @@ class PlayerEventListener(
                 )
             )
         }
-        @Suppress("TooGenericExceptionCaught")`n        catch (e: Exception) {
+        catch (e: Exception) {
             logger.error("Unhandled error", e)
         }
     }

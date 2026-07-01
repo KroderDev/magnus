@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
@@ -41,7 +43,6 @@ class GlobalChatService(
             messageBus.publish(CHANNEL, payload)
             logger.debug("Published chat message from $playerName")
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Failed to publish chat message: ${e.message}", e)
         }
@@ -70,7 +71,6 @@ class GlobalChatService(
 
             logger.debug("Received chat from ${message.serverName}: ${message.playerName}")
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Failed to process incoming chat message: ${e.message}", e)
         }

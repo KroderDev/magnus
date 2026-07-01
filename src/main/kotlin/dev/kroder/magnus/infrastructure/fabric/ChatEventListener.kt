@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.fabric
 
 import dev.kroder.magnus.application.GlobalChatService
@@ -29,7 +31,6 @@ class ChatEventListener(
                     rawMessage = rawText
                 )
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to process chat message: ${e.message}", e)
             }

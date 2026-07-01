@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.fabric
 
 import com.mojang.brigadier.CommandDispatcher
@@ -71,7 +73,6 @@ class GlistCommand(
 
             return 1
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             source.sendError(Text.literal("§cError fetching global player list."))
             return 0

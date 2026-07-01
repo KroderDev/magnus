@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.port.PlayerRepository
@@ -30,7 +32,6 @@ class BackupRecoveryService(
             try {
                 processBackups()
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Error during recovery process", e)
             }
@@ -79,7 +80,6 @@ class BackupRecoveryService(
                     }
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
                 logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
             }

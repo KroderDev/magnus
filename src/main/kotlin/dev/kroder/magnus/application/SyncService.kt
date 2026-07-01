@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.model.PlayerData
@@ -82,7 +84,6 @@ class SyncService(
             try {
                 savePlayerData(data)
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 logger.error("Failed to save player data for ${data.uuid}", e)
             }

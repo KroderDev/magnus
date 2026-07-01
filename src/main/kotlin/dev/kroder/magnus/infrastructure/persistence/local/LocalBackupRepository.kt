@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.persistence.local
 
 import dev.kroder.magnus.domain.model.PlayerData
@@ -44,7 +46,6 @@ class LocalBackupRepository(
                     val uuid = UUID.fromString(uuidStr)
                     pendingBackups.add(uuid)
                 }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.warn("Failed to parse backup filename", e)
                 }
@@ -76,7 +77,6 @@ class LocalBackupRepository(
                     val content = Files.readString(file.toPath())
                     result = json.decodeFromString(PlayerData.serializer(), content)
                 }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
                 catch (e: Exception) {
                     logger.warn("Failed to read backup file", e)
                 }
@@ -108,7 +108,6 @@ class LocalBackupRepository(
                 val content = Files.readString(file.toPath())
                 json.decodeFromString(PlayerData.serializer(), content)
             }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
             catch (e: Exception) {
                 null
             }

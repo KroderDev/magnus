@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.domain.processing
 
 import org.slf4j.LoggerFactory
@@ -28,7 +30,6 @@ class LockManager(private val jedisPool: JedisPool) {
                 jedis.exists("$LOCK_PREFIX$playerUuid")
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.warn("Failed to check lock for $playerUuid: ${e.message}")
             false // Fail open to avoid blocking players if Redis is down
@@ -46,7 +47,6 @@ class LockManager(private val jedisPool: JedisPool) {
                 logger.debug("Locked session for $playerUuid")
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Failed to set lock for $playerUuid: ${e.message}")
         }
@@ -63,7 +63,6 @@ class LockManager(private val jedisPool: JedisPool) {
                 logger.debug("Unlocked session for $playerUuid")
             }
         }
-        @Suppress("TooGenericExceptionCaught", "SwallowedException")
         catch (e: Exception) {
             logger.error("Failed to unlock session for $playerUuid: ${e.message}")
         }
