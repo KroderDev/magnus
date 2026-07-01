@@ -1,5 +1,4 @@
 @file:Suppress("TooGenericExceptionCaught", "SwallowedException")
-
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.model.PlayerData

@@ -1,5 +1,4 @@
 @file:Suppress("TooGenericExceptionCaught", "SwallowedException")
-
 package dev.kroder.magnus.infrastructure.config
 
 import net.fabricmc.loader.api.FabricLoader
