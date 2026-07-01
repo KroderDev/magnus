@@ -1,5 +1,7 @@
 package dev.kroder.magnus.infrastructure.persistence
 
+@file:Suppress("NoWildcardImports")
+
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import dev.kroder.magnus.infrastructure.persistence.redis.RedisPlayerRepository
