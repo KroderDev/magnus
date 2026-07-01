@@ -77,10 +77,9 @@ class BackupRecoveryService(
                         logger.info("Discarding backup for ${backupData.username}: DB is newer or equal.")
                         localBackup.deleteFile(backupData.uuid) // Obsolete backup
                     }
-            }
-        } catch (e: Exception) {
-                logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
-            }
+                } catch (e: Exception) {
+                    logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
+                }
         }
     }
 }

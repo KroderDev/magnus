@@ -1,6 +1,7 @@
+@file:Suppress("NoWildcardImports")
+
 package dev.kroder.magnus.infrastructure.messaging
 
-@file:Suppress("NoWildcardImports")
 
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertTrue

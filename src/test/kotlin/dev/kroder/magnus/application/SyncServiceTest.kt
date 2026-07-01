@@ -1,6 +1,7 @@
+@file:Suppress("NoWildcardImports")
+
 package dev.kroder.magnus.application
 
-@file:Suppress("NoWildcardImports")
 
 import dev.kroder.magnus.domain.exception.SessionLockedException
 import dev.kroder.magnus.domain.model.PlayerData

@@ -1,6 +1,7 @@
+@file:Suppress("NoWildcardImports")
+
 package dev.kroder.magnus.infrastructure.module
 
-@file:Suppress("NoWildcardImports")
 
 import dev.kroder.magnus.domain.module.MagnusModule
 import io.mockk.*

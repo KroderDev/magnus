@@ -1,6 +1,7 @@
+@file:Suppress("NoWildcardImports")
+
 package dev.kroder.magnus.infrastructure.persistence
 
-@file:Suppress("NoWildcardImports")
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
@@ -94,4 +95,3 @@ class PersistenceResilienceTest {
         )
     }
 }
-
