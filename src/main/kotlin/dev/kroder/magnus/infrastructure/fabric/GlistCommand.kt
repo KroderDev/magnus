@@ -72,8 +72,7 @@ class GlistCommand(
             }
 
             return 1
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             source.sendError(Text.literal("§cError fetching global player list."))
             return 0
         }

@@ -42,8 +42,7 @@ object ConfigLoader {
             } else {
                 config
             }
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             logger.warn("Failed to load config, using defaults", e)
             // Fallback to default if corrupted, but maybe better to crash or warn?
             // For now, return default but don't overwrite the corrupt file so user can fix it.
@@ -76,8 +75,7 @@ object ConfigLoader {
         try {
             val content = json.encodeToString(MagnusConfig.serializer(), config)
             Files.writeString(configFile.toPath(), content)
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             logger.warn("Failed to save config file", e)
         }
     }

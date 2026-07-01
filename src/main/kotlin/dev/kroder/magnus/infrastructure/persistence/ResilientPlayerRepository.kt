@@ -25,8 +25,7 @@ class ResilientPlayerRepository(
     override fun save(data: PlayerData) {
         try {
             primary.save(data)
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             logger.error(
                 "Primary repository failed to save player ${data.username} (${data.uuid}). " +
                     "Failing over to LOCAL BACKUP.",
@@ -35,8 +34,7 @@ class ResilientPlayerRepository(
             try {
                 backup.save(data)
                 logger.warn("Saved player ${data.username} to local backup successfully.")
-            }
-            catch (ex: Exception) {
+            }             catch (ex: Exception) {
                 logger.error("CRITICAL: Failed to save to local backup too!", ex)
             }
         }
@@ -53,8 +51,7 @@ class ResilientPlayerRepository(
         // 2. Try to load from Primary (DB/Redis)
         try {
             remoteData = primary.findByUuid(uuid)
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             remoteError = e
             logger.error("Primary repository failed to load data for $uuid. (Has Local: $hasLocalBackup)", e)
         }
@@ -90,8 +87,7 @@ class ResilientPlayerRepository(
     override fun deleteCache(uuid: UUID) {
         try {
             primary.deleteCache(uuid)
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid", e)
         }
     }

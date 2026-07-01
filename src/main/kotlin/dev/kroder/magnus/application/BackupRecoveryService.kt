@@ -31,8 +31,7 @@ class BackupRecoveryService(
         scheduler.scheduleAtFixedRate({
             try {
                 processBackups()
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Error during recovery process", e)
             }
         }, INITIAL_DELAY_MINUTES, PERIOD_MINUTES, TimeUnit.MINUTES)
@@ -79,8 +78,7 @@ class BackupRecoveryService(
                         localBackup.deleteFile(backupData.uuid) // Obsolete backup
                     }
             }
-        }
-        catch (e: Exception) {
+        }         catch (e: Exception) {
                 logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
             }
         }

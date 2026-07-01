@@ -26,8 +26,7 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
                 jedisPool.resource.use { jedis ->
                     jedis.publish(channel, message)
                 }
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Failed to publish message to channel '$channel': ${e.message}", e)
             }
         }
@@ -43,8 +42,7 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
             override fun onMessage(ch: String, msg: String) {
                 try {
                     callback(msg)
-                }
-                catch (e: Exception) {
+                }                 catch (e: Exception) {
                     logger.error("Error handling message on channel '$ch': ${e.message}", e)
                 }
             }
@@ -59,8 +57,7 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
                     logger.info("Subscribing to channel: $channel")
                     jedis.subscribe(pubSub, channel)
                 }
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Subscription to '$channel' failed or was interrupted: ${e.message}")
             } finally {
                 listeners.remove(channel)
@@ -73,8 +70,7 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
         listeners.values.forEach {
             try {
                 if (it.isSubscribed) it.unsubscribe()
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Error unsubscribing: ${e.message}")
             }
         }

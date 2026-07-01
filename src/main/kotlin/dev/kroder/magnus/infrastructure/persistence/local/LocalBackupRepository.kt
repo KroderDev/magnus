@@ -45,8 +45,7 @@ class LocalBackupRepository(
                     val uuidStr = file.nameWithoutExtension
                     val uuid = UUID.fromString(uuidStr)
                     pendingBackups.add(uuid)
-                }
-                catch (e: Exception) {
+                }                 catch (e: Exception) {
                     logger.warn("Failed to parse backup filename", e)
                 }
             }
@@ -76,8 +75,7 @@ class LocalBackupRepository(
                 try {
                     val content = Files.readString(file.toPath())
                     result = json.decodeFromString(PlayerData.serializer(), content)
-                }
-                catch (e: Exception) {
+                }                 catch (e: Exception) {
                     logger.warn("Failed to read backup file", e)
                 }
             } else {
@@ -107,8 +105,7 @@ class LocalBackupRepository(
             try {
                 val content = Files.readString(file.toPath())
                 json.decodeFromString(PlayerData.serializer(), content)
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 null
             }
         }

@@ -83,8 +83,7 @@ class SyncService(
         playerDataList.forEach { data ->
             try {
                 savePlayerData(data)
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Failed to save player data for ${data.uuid}", e)
             }
         }

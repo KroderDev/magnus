@@ -30,8 +30,7 @@ class ChatEventListener(
                     playerName = sender.gameProfile.name,
                     rawMessage = rawText
                 )
-            }
-            catch (e: Exception) {
+            }             catch (e: Exception) {
                 logger.error("Failed to process chat message: ${e.message}", e)
             }
         }
