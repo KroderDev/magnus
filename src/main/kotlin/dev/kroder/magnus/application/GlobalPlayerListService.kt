@@ -48,7 +48,8 @@ class GlobalPlayerListService(
             while (isActive) {
                 try {
                     publishHeartbeat(server)
-                } catch (e: Exception) {
+                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                catch (e: Exception) {
                     logger.error("Heartbeat failed: ${e.message}", e)
                 }
                 delay(HEARTBEAT_INTERVAL_MS)
@@ -97,7 +98,8 @@ class GlobalPlayerListService(
             val info = json.decodeFromString<ServerPlayerInfo>(payload)
             serverPlayers[info.serverName] = info
             cleanupStaleEntries()
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error("Failed to process heartbeat: ${e.message}", e)
         }
     }

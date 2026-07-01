@@ -5,10 +5,12 @@ import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 import java.nio.file.Files
+import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.util.Base64
 
 object ConfigLoader {
+    private val logger = LoggerFactory.getLogger("magnus-config")
     private const val SECRET_BYTE_LENGTH = 32
 
     private val json = Json {
@@ -38,8 +40,9 @@ object ConfigLoader {
             } else {
                 config
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
+            logger.warn("Failed to load config, using defaults", e)
             // Fallback to default if corrupted, but maybe better to crash or warn?
             // For now, return default but don't overwrite the corrupt file so user can fix it.
             MagnusConfig()
@@ -71,8 +74,9 @@ object ConfigLoader {
         try {
             val content = json.encodeToString(MagnusConfig.serializer(), config)
             Files.writeString(configFile.toPath(), content)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
+            logger.warn("Failed to save config file", e)
         }
     }
 }

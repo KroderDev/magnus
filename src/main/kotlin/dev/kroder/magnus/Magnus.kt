@@ -1,17 +1,17 @@
 package dev.kroder.magnus
 
 import dev.kroder.magnus.application.SyncService
+import dev.kroder.magnus.infrastructure.module.inventorysync.InventorySyncModule
 import dev.kroder.magnus.infrastructure.persistence.CachedPlayerRepository
 import dev.kroder.magnus.infrastructure.persistence.postgres.PlayerDataTable
 import dev.kroder.magnus.infrastructure.persistence.postgres.PostgresPlayerRepository
 import dev.kroder.magnus.infrastructure.persistence.redis.RedisPlayerRepository
+import dev.kroder.magnus.login.LoginQueueHandler
 import net.fabricmc.api.ModInitializer
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
-import dev.kroder.magnus.login.LoginQueueHandler
-import dev.kroder.magnus.infrastructure.module.inventorysync.InventorySyncModule
 
 /**
  * Main entry point for the Magnus Sync mod.
@@ -48,10 +48,11 @@ object Magnus : ModInitializer {
                 SchemaUtils.createMissingTablesAndColumns(PlayerDataTable)
             }
             logger.info("Persistence: PostgreSQL connected and schema verified. [OK]")
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn(
                 "Persistence: PostgreSQL connection FAILED. Server starting in RESILIENCE MODE (Offline). " +
-                "Reason: ${e.message}"
+                    "Reason: ${e.message}"
             )
         }
 
@@ -74,10 +75,11 @@ object Magnus : ModInitializer {
                         logger.info("Cache: SSL/TLS encryption is ENABLED")
                     }
                 } else {
-                     logger.warn("Cache: Redis connection unstable? Ping response: $ping")
+                    logger.warn("Cache: Redis connection unstable? Ping response: $ping")
                 }
             }
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Cache: Redis connection FAILED. Performance will be degraded. Reason: ${e.message}")
         }
 
@@ -85,7 +87,6 @@ object Magnus : ModInitializer {
         val postgresRepo = PostgresPlayerRepository(database)
         val redisRepo = RedisPlayerRepository(jedisPool, maxPayloadSize = config.maxMessageSizeBytes)
         val compositeRepo = CachedPlayerRepository(cache = redisRepo, persistentStore = postgresRepo)
-
 
         // Resilience Layer
         val backupsDir = net.fabricmc.loader.api.FabricLoader.getInstance().configDir.resolve("magnus/backups").toFile()
@@ -118,7 +119,7 @@ object Magnus : ModInitializer {
             if (config.enableMessageSigning) {
                 logger.warn(
                     "MessageBus: enableMessageSigning is true but no messageSigningSecret provided! " +
-                    "Signing disabled."
+                        "Signing disabled."
                 )
             }
             null
@@ -174,7 +175,8 @@ object Magnus : ModInitializer {
                 // Force save online players through the InventorySyncModule
                 val invSync = moduleManager.getModule<InventorySyncModule>("inventory-sync")
                 invSync?.forceSaveAllPlayers(server.playerManager.playerList)
-            } catch (e: Exception) {
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (e: Exception) {
                 logger.error("Magnus: Error during forced player data save!", e)
             }
 
@@ -185,7 +187,8 @@ object Magnus : ModInitializer {
                 messageBus.close()
                 jedisPool.close()
                 logger.info("Magnus: Services stopped cleanly.")
-            } catch (e: Exception) {
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (e: Exception) {
                 logger.error("Magnus: Error during shutdown!", e)
             }
         }

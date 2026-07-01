@@ -43,9 +43,11 @@ object LoginQueueHandler {
             Magnus.logger.info("LoginQueueHandler: Checking session lock for player ${profile.name} ($playerId)")
 
             // Register a synchronization task that waits for the session lock to be released
-            synchronizer.waitFor(CompletableFuture.supplyAsync {
-                waitForSessionUnlock(playerId, profile.name ?: "Unknown")
-            })
+            synchronizer.waitFor(
+                CompletableFuture.supplyAsync {
+                    waitForSessionUnlock(playerId, profile.name ?: "Unknown")
+                }
+            )
         }
 
         Magnus.logger.info("LoginQueueHandler: Registered login synchronization handler")
@@ -68,7 +70,7 @@ object LoginQueueHandler {
                     Magnus.logger.warn(
                         "LoginQueueHandler: Timeout waiting for session unlock for $playerName ($playerId)"
                     )
-                    throw RuntimeException(
+                    throw IllegalStateException(
                         "Session Sync Timeout: Could not acquire lock after ${MAX_WAIT_MS / MS_PER_SECOND}s. " +
                             "Please try again."
                     )
@@ -89,8 +91,9 @@ object LoginQueueHandler {
             return null
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            throw RuntimeException("Login synchronization interrupted", e)
-        } catch (e: Exception) {
+            throw IllegalStateException("Login synchronization interrupted", e)
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             Magnus.logger.error("LoginQueueHandler: Error checking session lock for $playerName", e)
             // On error, allow login to proceed (fail-open behavior)
             return null

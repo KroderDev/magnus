@@ -28,19 +28,14 @@ class RedisPlayerRepository(
         if (value.length > maxPayloadSize) {
             logger.warn(
                 "Rejecting oversized persistence snapshot for ${data.username} (${data.uuid}): " +
-                "${value.length} bytes. Max allowed: $maxPayloadSize"
+                    "${value.length} bytes. Max allowed: $maxPayloadSize"
             )
             return
         }
 
-        try {
-            pool.resource.use { jedis ->
-                val key = "$keyPrefix${data.uuid}"
-                jedis.set(key, value)
-            }
-        } catch (e: Exception) {
-            // Rethrow so CachedPlayerRepository can handle failure/logging
-            throw e
+        pool.resource.use { jedis ->
+            val key = "$keyPrefix${data.uuid}"
+            jedis.set(key, value)
         }
     }
 
@@ -58,4 +53,3 @@ class RedisPlayerRepository(
         }
     }
 }
-

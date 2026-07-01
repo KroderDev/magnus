@@ -2,6 +2,7 @@ package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 /**
@@ -19,6 +20,7 @@ class SyncService(
     private val repository: PlayerRepository,
     private val lockManager: LockManager? = null
 ) {
+    private val logger = LoggerFactory.getLogger("magnus-sync")
 
     /**
      * Handles the logic of loading a player's data when they join the server.
@@ -79,12 +81,9 @@ class SyncService(
         playerDataList.forEach { data ->
             try {
                 savePlayerData(data)
-            } catch (e: Exception) {
-                // Fail-safe: Log error and continue with the next player
-                // We don't have a logger here, but the repository or the caller should handle logging.
-                // For now, we ensure the loop doesn't break.
-                System.err.println("Failed to save player data for ${data.uuid}: ${e.message}")
-                e.printStackTrace()
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (e: Exception) {
+                logger.error("Failed to save player data for ${data.uuid}", e)
             }
         }
     }

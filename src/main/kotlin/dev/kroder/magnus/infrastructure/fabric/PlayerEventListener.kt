@@ -2,9 +2,8 @@ package dev.kroder.magnus.infrastructure.fabric
 
 import dev.kroder.magnus.application.SyncService
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayNetworkHandler
-import net.minecraft.text.Text
+import org.slf4j.LoggerFactory
 
 /**
  * Fabric event listeners that drive the synchronization process.
@@ -17,6 +16,7 @@ import net.minecraft.text.Text
 class PlayerEventListener(
     private val syncService: SyncService
 ) {
+    private val logger = LoggerFactory.getLogger("magnus-player-events")
 
     fun register() {
         // Triggered when a player successfully connects to the server
@@ -49,9 +49,9 @@ class PlayerEventListener(
                     "§cSync Error: Database Unavailable.\n§7Please try again later. Your data is safe."
                 )
             )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            // Optional: Kick on generic error too?
+        } @Suppress("TooGenericExceptionCaught")
+        catch (e: Exception) {
+            logger.error("Unhandled error", e)
         }
     }
 

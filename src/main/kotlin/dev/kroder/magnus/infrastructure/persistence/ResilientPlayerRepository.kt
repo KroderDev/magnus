@@ -23,16 +23,18 @@ class ResilientPlayerRepository(
     override fun save(data: PlayerData) {
         try {
             primary.save(data)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error(
                 "Primary repository failed to save player ${data.username} (${data.uuid}). " +
-                "Failing over to LOCAL BACKUP.",
+                    "Failing over to LOCAL BACKUP.",
                 e
             )
             try {
                 backup.save(data)
                 logger.warn("Saved player ${data.username} to local backup successfully.")
-            } catch (ex: Exception) {
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (ex: Exception) {
                 logger.error("CRITICAL: Failed to save to local backup too!", ex)
             }
         }
@@ -49,7 +51,8 @@ class ResilientPlayerRepository(
         // 2. Try to load from Primary (DB/Redis)
         try {
             remoteData = primary.findByUuid(uuid)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught")
+        catch (e: Exception) {
             remoteError = e
             logger.error("Primary repository failed to load data for $uuid. (Has Local: $hasLocalBackup)", e)
         }
@@ -65,7 +68,7 @@ class ResilientPlayerRepository(
                 "Remote unavailable or null."
             } else {
                 "Using LOCAL backup for $uuid (Local is FRESHER: ${localData!!.lastUpdated} > " +
-                "${remoteData!!.lastUpdated}). DB is stale."
+                    "${remoteData!!.lastUpdated}). DB is stale."
             }
             logger.warn("Using LOCAL backup for $uuid ($reason)")
             result = localData
@@ -85,7 +88,8 @@ class ResilientPlayerRepository(
     override fun deleteCache(uuid: UUID) {
         try {
             primary.deleteCache(uuid)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid", e)
         }
     }

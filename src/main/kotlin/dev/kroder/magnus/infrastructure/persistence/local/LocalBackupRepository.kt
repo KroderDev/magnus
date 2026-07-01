@@ -3,6 +3,7 @@ package dev.kroder.magnus.infrastructure.persistence.local
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -20,7 +21,13 @@ class LocalBackupRepository(
     private val rootDir: File
 ) : PlayerRepository {
 
-    private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        prettyPrint = true
+    }
+
+    private val logger = LoggerFactory.getLogger("magnus-local-backup")
+
     // O(1) In-Memory Index (Dirty Set)
     private val pendingBackups = java.util.concurrent.ConcurrentHashMap.newKeySet<UUID>()
 
@@ -36,8 +43,9 @@ class LocalBackupRepository(
                     val uuidStr = file.nameWithoutExtension
                     val uuid = UUID.fromString(uuidStr)
                     pendingBackups.add(uuid)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                catch (e: Exception) {
+                    logger.warn("Failed to parse backup filename", e)
                 }
             }
         }
@@ -52,7 +60,7 @@ class LocalBackupRepository(
             // Mark as dirty in memory
             pendingBackups.add(data.uuid)
         } catch (e: IOException) {
-            e.printStackTrace()
+            logger.warn("Failed to save backup file", e)
         }
     }
 
@@ -66,8 +74,9 @@ class LocalBackupRepository(
                 try {
                     val content = Files.readString(file.toPath())
                     result = json.decodeFromString(PlayerData.serializer(), content)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+                catch (e: Exception) {
+                    logger.warn("Failed to read backup file", e)
                 }
             } else {
                 pendingBackups.remove(uuid)
@@ -96,7 +105,8 @@ class LocalBackupRepository(
             try {
                 val content = Files.readString(file.toPath())
                 json.decodeFromString(PlayerData.serializer(), content)
-            } catch (e: Exception) {
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (e: Exception) {
                 null
             }
         }

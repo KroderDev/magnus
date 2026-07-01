@@ -40,7 +40,8 @@ class GlobalChatService(
             val payload = json.encodeToString(message)
             messageBus.publish(CHANNEL, payload)
             logger.debug("Published chat message from $playerName")
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error("Failed to publish chat message: ${e.message}", e)
         }
     }
@@ -67,7 +68,8 @@ class GlobalChatService(
             }
 
             logger.debug("Received chat from ${message.serverName}: ${message.playerName}")
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error("Failed to process incoming chat message: ${e.message}", e)
         }
     }

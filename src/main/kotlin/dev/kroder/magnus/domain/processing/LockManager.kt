@@ -27,7 +27,8 @@ class LockManager(private val jedisPool: JedisPool) {
             jedisPool.resource.use { jedis ->
                 jedis.exists("$LOCK_PREFIX$playerUuid")
             }
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Failed to check lock for $playerUuid: ${e.message}")
             false // Fail open to avoid blocking players if Redis is down
         }
@@ -43,7 +44,8 @@ class LockManager(private val jedisPool: JedisPool) {
                 jedis.setex("$LOCK_PREFIX$playerUuid", LOCK_TTL_SECONDS, "LOCKED")
                 logger.debug("Locked session for $playerUuid")
             }
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error("Failed to set lock for $playerUuid: ${e.message}")
         }
     }
@@ -58,7 +60,8 @@ class LockManager(private val jedisPool: JedisPool) {
                 jedis.del("$LOCK_PREFIX$playerUuid")
                 logger.debug("Unlocked session for $playerUuid")
             }
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.error("Failed to unlock session for $playerUuid: ${e.message}")
         }
     }

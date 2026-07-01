@@ -23,7 +23,8 @@ class CachedPlayerRepository(
         // 1. Try to save to cache (Redis)
         try {
             cache.save(data)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Cache save failed for ${data.uuid}: ${e.message}")
         }
 
@@ -36,7 +37,8 @@ class CachedPlayerRepository(
         var result: PlayerData? = null
         try {
             result = cache.findByUuid(uuid)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Cache load failed for $uuid: ${e.message}")
         }
 
@@ -49,7 +51,8 @@ class CachedPlayerRepository(
         if (result != null) {
             try {
                 cache.save(result)
-            } catch (e: Exception) {
+            } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+            catch (e: Exception) {
                 logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
             }
         }
@@ -60,9 +63,9 @@ class CachedPlayerRepository(
     override fun deleteCache(uuid: UUID) {
         try {
             cache.deleteCache(uuid)
-        } catch (e: Exception) {
+        } @Suppress("TooGenericExceptionCaught", "SwallowedException")
+        catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid: ${e.message}")
         }
     }
 }
-
