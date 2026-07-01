@@ -51,7 +51,7 @@ class PlayerEventListener(
                     "§cSync Error: Database Unavailable.\n§7Please try again later. Your data is safe."
                 )
             )
-        }         catch (e: Exception) {
+        } catch (e: Exception) {
             logger.error("Unhandled error", e)
         }
     }

@@ -51,7 +51,7 @@ object Magnus : ModInitializer {
                 SchemaUtils.createMissingTablesAndColumns(PlayerDataTable)
             }
             logger.info("Persistence: PostgreSQL connected and schema verified. [OK]")
-        }         catch (e: Exception) {
+        } catch (e: Exception) {
             logger.warn(
                 "Persistence: PostgreSQL connection FAILED. Server starting in RESILIENCE MODE (Offline). " +
                     "Reason: ${e.message}"
@@ -80,7 +80,7 @@ object Magnus : ModInitializer {
                     logger.warn("Cache: Redis connection unstable? Ping response: $ping")
                 }
             }
-        }         catch (e: Exception) {
+        } catch (e: Exception) {
             logger.warn("Cache: Redis connection FAILED. Performance will be degraded. Reason: ${e.message}")
         }
 
@@ -176,7 +176,7 @@ object Magnus : ModInitializer {
                 // Force save online players through the InventorySyncModule
                 val invSync = moduleManager.getModule<InventorySyncModule>("inventory-sync")
                 invSync?.forceSaveAllPlayers(server.playerManager.playerList)
-            }             catch (e: Exception) {
+            } catch (e: Exception) {
                 logger.error("Magnus: Error during forced player data save!", e)
             }
 
@@ -187,7 +187,7 @@ object Magnus : ModInitializer {
                 messageBus.close()
                 jedisPool.close()
                 logger.info("Magnus: Services stopped cleanly.")
-            }             catch (e: Exception) {
+            } catch (e: Exception) {
                 logger.error("Magnus: Error during shutdown!", e)
             }
         }

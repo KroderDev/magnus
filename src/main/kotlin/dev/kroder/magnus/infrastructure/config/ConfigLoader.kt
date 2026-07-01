@@ -2,14 +2,13 @@
 
 package dev.kroder.magnus.infrastructure.config
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 import java.nio.file.Files
-import org.slf4j.LoggerFactory
 import java.security.SecureRandom
 import java.util.Base64
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 object ConfigLoader {
     private val logger = LoggerFactory.getLogger("magnus-config")
@@ -42,7 +41,7 @@ object ConfigLoader {
             } else {
                 config
             }
-        }         catch (e: Exception) {
+        } catch (e: Exception) {
             logger.warn("Failed to load config, using defaults", e)
             // Fallback to default if corrupted, but maybe better to crash or warn?
             // For now, return default but don't overwrite the corrupt file so user can fix it.
@@ -75,9 +74,8 @@ object ConfigLoader {
         try {
             val content = json.encodeToString(MagnusConfig.serializer(), config)
             Files.writeString(configFile.toPath(), content)
-        }         catch (e: Exception) {
+        } catch (e: Exception) {
             logger.warn("Failed to save config file", e)
         }
     }
 }
-
