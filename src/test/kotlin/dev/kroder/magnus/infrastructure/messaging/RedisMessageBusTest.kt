@@ -1,4 +1,4 @@
-@file:Suppress("WildcardImport")
+@file:Suppress("NoWildcardImports")
 
 package dev.kroder.magnus.infrastructure.messaging
 

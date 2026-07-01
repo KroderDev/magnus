@@ -1,9 +1,11 @@
 @file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import org.slf4j.LoggerFactory
+
 import java.util.UUID
 
 /**

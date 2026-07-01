@@ -11,12 +11,13 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
 /**
  * Unit tests for GlobalPlayerListService.
  * Tests focus on service logic without Minecraft dependencies.
  */
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class GlobalPlayerListServiceTest {
     private lateinit var messageBus: MessageBus

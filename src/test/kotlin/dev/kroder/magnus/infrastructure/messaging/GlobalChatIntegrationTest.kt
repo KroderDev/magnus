@@ -14,8 +14,10 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
+
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

@@ -1,11 +1,14 @@
 @file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.config
 
 import net.fabricmc.loader.api.FabricLoader
+
 import java.io.File
 import java.nio.file.Files
 import java.security.SecureRandom
 import java.util.Base64
+
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
