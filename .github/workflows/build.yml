@@ -59,7 +59,7 @@ jobs:
         run: ./gradlew test assemble runGametest
       - name: capture build artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.id }}-artifacts
           if-no-files-found: ignore

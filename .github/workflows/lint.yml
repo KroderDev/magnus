@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew detekt --no-daemon --stacktrace
       - name: capture detekt report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: detekt-report
           if-no-files-found: ignore
