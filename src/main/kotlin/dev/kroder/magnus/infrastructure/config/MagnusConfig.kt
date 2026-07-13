@@ -26,6 +26,7 @@ data class MagnusConfig(
     val enableInventorySync: Boolean = true,
     val enableGlobalChat: Boolean = false,
     val enableGlobalPlayerList: Boolean = false,
+    val enableGlobalServerState: Boolean = false,
     val enableSessionLock: Boolean = false,
 
     // Redis Security Settings
@@ -36,5 +37,8 @@ data class MagnusConfig(
 
     // Redis Resilience Settings
     val subscriptionRetryDelayMs: Long = 5000,
-    val maxSubscriptionRetries: Int = 10
+    val maxSubscriptionRetries: Int = 10,
+
+    // Agent Tooling Settings
+    val serverStateHeartbeatIntervalMs: Long = 2500
 )

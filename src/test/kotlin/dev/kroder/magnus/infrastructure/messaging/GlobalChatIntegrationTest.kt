@@ -6,6 +6,8 @@ import com.redis.testcontainers.RedisContainer
 import dev.kroder.magnus.domain.model.ChatMessage
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
+import dev.kroder.magnus.domain.model.ServerStateInfo
+import dev.kroder.magnus.domain.model.WorldStateInfo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -116,6 +118,44 @@ class GlobalChatIntegrationTest {
         assertNotNull(receivedInfo)
         assertEquals("lobby", receivedInfo?.serverName)
         assertEquals(2, receivedInfo?.players?.size)
+    }
+
+    @Test
+    fun `should publish and receive ServerStateInfo heartbeat via Redis`() {
+        val latch = CountDownLatch(1)
+        var receivedInfo: ServerStateInfo? = null
+
+        messageBus.subscribe("magnus:serverstate") { payload ->
+            receivedInfo = json.decodeFromString<ServerStateInfo>(payload)
+            latch.countDown()
+        }
+
+        Thread.sleep(500)
+
+        val stateInfo = ServerStateInfo(
+            serverName = "survival",
+            playerCount = 2,
+            maxPlayers = 20,
+            worlds = listOf(
+                WorldStateInfo(
+                    dimension = "minecraft:overworld",
+                    timeOfDay = 18000,
+                    dayNumber = 12,
+                    phase = "night",
+                    isDay = false,
+                    isRaining = false,
+                    isThundering = false
+                )
+            )
+        )
+        messageBus.publish("magnus:serverstate", json.encodeToString(stateInfo))
+
+        val received = latch.await(5, TimeUnit.SECONDS)
+
+        assertTrue(received, "Server state heartbeat should be received within timeout")
+        assertNotNull(receivedInfo)
+        assertEquals("survival", receivedInfo?.serverName)
+        assertEquals("night", receivedInfo?.worlds?.first()?.phase)
     }
 
     @Test

@@ -56,4 +56,20 @@ class ChatMessageTest {
 
         assertEquals(message.rawMessage, deserialized.rawMessage)
     }
+
+    @Test
+    fun `should serialize optional target servers`() {
+        val message = ChatMessage(
+            serverName = "agent:test-persona",
+            playerUuid = "persona:test-persona",
+            playerName = "Test Persona",
+            rawMessage = "Hello target server",
+            targetServers = listOf("survival")
+        )
+
+        val serialized = json.encodeToString(message)
+        val deserialized = json.decodeFromString<ChatMessage>(serialized)
+
+        assertEquals(listOf("survival"), deserialized.targetServers)
+    }
 }

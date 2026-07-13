@@ -60,6 +60,8 @@ class GlobalChatService(
             // Ignore messages from this server to prevent echo
             if (message.serverName == serverName) return
 
+            if (message.targetServers != null && serverName !in message.targetServers) return
+
             // Broadcast raw message to all local players
             // The message is sent as-is to preserve any formatting from the source server
             val text = Text.literal("<${message.playerName}> ${message.rawMessage}")

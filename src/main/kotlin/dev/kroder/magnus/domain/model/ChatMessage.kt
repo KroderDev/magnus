@@ -13,5 +13,6 @@ data class ChatMessage(
     val playerUuid: String,
     val playerName: String,
     val rawMessage: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val targetServers: List<String>? = null
 )

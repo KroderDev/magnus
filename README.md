@@ -64,10 +64,12 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
     "enableInventorySync": true,
     "enableGlobalChat": false,
     "enableGlobalPlayerList": false,
+    "enableGlobalServerState": false,
     "enableSessionLock": false,
     "enableMessageSigning": true,
     "messageSigningSecret": "auto-generated-on-first-run",
-    "redisSsl": false
+    "redisSsl": false,
+    "serverStateHeartbeatIntervalMs": 2500
 }
 ```
 
@@ -84,9 +86,11 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
 | `enableInventorySync` | `true` | Enable inventory/player data synchronization. Disable for lobby servers. |
 | `enableGlobalChat` | `false` | Enable cross-server chat synchronization |
 | `enableGlobalPlayerList` | `false` | Enable global player list and `/glist` command |
+| `enableGlobalServerState` | `false` | Publish read-only live server facts for agent tools |
 | `enableSessionLock` | `false` | Enable session locking to prevent concurrent logins |
 | `enableMessageSigning` | `true` | Enable HMAC message signing (recommended) |
 | `redisSsl` | `false` | Enable SSL/TLS for Redis connections |
+| `serverStateHeartbeatIntervalMs` | `2500` | Server-state heartbeat interval in milliseconds |
 
 ## Commands
 

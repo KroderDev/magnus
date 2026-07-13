@@ -163,6 +163,17 @@ object Magnus : ModInitializer {
             moduleManager.enableModule("global-player-list")
         }
 
+        if (config.enableGlobalServerState) {
+            val globalServerStateModule =
+                dev.kroder.magnus.infrastructure.module.globalserverstate.GlobalServerStateModule(
+                    messageBus = messageBus,
+                    serverName = config.serverName,
+                    heartbeatIntervalMs = config.serverStateHeartbeatIntervalMs
+                )
+            moduleManager.registerModule(globalServerStateModule)
+            moduleManager.enableModule("global-server-state")
+        }
+
         // 7. Initialize Login Queue Handler (uses Fabric API instead of Mixin)
         if (config.enableSessionLock) {
             LoginQueueHandler.register()
