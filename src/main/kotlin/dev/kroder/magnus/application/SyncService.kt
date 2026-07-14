@@ -1,11 +1,15 @@
-@file:Suppress("TooGenericExceptionCaught", "SwallowedException", "ImportOrdering")
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
 
 package dev.kroder.magnus.application
 
+import dev.kroder.magnus.domain.exception.SessionLockedException
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
+import dev.kroder.magnus.domain.processing.LockManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-
 import java.util.UUID
 
 /**
@@ -16,8 +20,6 @@ import java.util.UUID
  * - This service does not know anything about NBT, JDBC, or Redis.
  * - It relies purely on the [PlayerData] model and [PlayerRepository] interface.
  */
-import dev.kroder.magnus.domain.processing.LockManager
-import dev.kroder.magnus.domain.exception.SessionLockedException
 
 class SyncService(
     private val repository: PlayerRepository,
@@ -77,15 +79,20 @@ class SyncService(
     }
 
     /**
-     * Saves all online players' data in a fail-safe manner.
+     * Saves all online players' data in a fail-safe, parallelized manner.
      * This is typically used during server shutdown.
      */
     fun saveAllPlayerData(playerDataList: List<PlayerData>) {
-        playerDataList.forEach { data ->
-            try {
-                savePlayerData(data)
-            } catch (e: Exception) {
-                logger.error("Failed to save player data for ${data.uuid}", e)
+        if (playerDataList.isEmpty()) return
+        runBlocking(Dispatchers.IO) {
+            playerDataList.forEach { data ->
+                launch {
+                    try {
+                        savePlayerData(data)
+                    } catch (e: Exception) {
+                        logger.error("Failed to save player data for ${data.uuid}", e)
+                    }
+                }
             }
         }
     }

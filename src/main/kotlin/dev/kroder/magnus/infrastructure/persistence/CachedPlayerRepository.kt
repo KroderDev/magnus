@@ -4,6 +4,11 @@ package dev.kroder.magnus.infrastructure.persistence
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
@@ -16,7 +21,9 @@ import java.util.UUID
  */
 class CachedPlayerRepository(
     private val cache: PlayerRepository,
-    private val persistentStore: PlayerRepository
+    private val persistentStore: PlayerRepository,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+    private val asyncPersistence: Boolean = true
 ) : PlayerRepository {
 
     private val logger = LoggerFactory.getLogger("magnus-cached-repo")
@@ -30,7 +37,17 @@ class CachedPlayerRepository(
         }
 
         // 2. Always save to persistent store (Postgres)
-        persistentStore.save(data)
+        if (asyncPersistence) {
+            scope.launch {
+                try {
+                    persistentStore.save(data)
+                } catch (e: Exception) {
+                    logger.error("Persistent store save failed for ${data.uuid}: ${e.message}", e)
+                }
+            }
+        } else {
+            persistentStore.save(data)
+        }
     }
 
     override fun findByUuid(uuid: UUID): PlayerData? {
@@ -49,10 +66,21 @@ class CachedPlayerRepository(
 
         // 3. Update cache for next time (Isolated)
         if (result != null) {
-            try {
-                cache.save(result)
-            } catch (e: Exception) {
-                logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
+            if (asyncPersistence) {
+                val toCache = result
+                scope.launch {
+                    try {
+                        cache.save(toCache)
+                    } catch (e: Exception) {
+                        logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
+                    }
+                }
+            } else {
+                try {
+                    cache.save(result)
+                } catch (e: Exception) {
+                    logger.debug("Failed to update cache after DB load for $uuid: ${e.message}")
+                }
             }
         }
 
@@ -65,5 +93,9 @@ class CachedPlayerRepository(
         } catch (e: Exception) {
             logger.warn("Failed to delete cache for $uuid: ${e.message}")
         }
+    }
+
+    fun shutdown() {
+        scope.cancel()
     }
 }
