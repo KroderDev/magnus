@@ -2,45 +2,62 @@
 # See https://github.com/actions/labeler
 
 "domain":
-  - src/main/kotlin/**/domain/**/*
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/domain/**/*'
 
 "application":
-  - src/main/kotlin/**/application/**/*
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/application/**/*'
 
 "infrastructure":
-  - src/main/kotlin/**/infrastructure/**/*
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/infrastructure/**/*'
 
 "client":
-  - src/client/**/*
+  - changed-files:
+      - any-glob-to-any-file: 'src/client/**/*'
 
 "tests":
-  - src/test/**/*
+  - changed-files:
+      - any-glob-to-any-file: 'src/test/**/*'
 
 "docs":
-  - docs/**/*
-  - README.md
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**/*'
+          - 'README.md'
 
 "docker":
-  - Dockerfile
-  - Dockerfile.dev
-  - docker-compose.yml
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - 'Dockerfile.dev'
+          - 'docker-compose.yml'
 
 "ci":
-  - .github/**/*
-  - Makefile
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**/*'
+          - 'Makefile'
 
 "gradle":
-  - build.gradle
-  - settings.gradle
-  - gradle.properties
-  - gradle/**/*
-  - gradlew
-  - gradlew.bat
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'build.gradle'
+          - 'settings.gradle'
+          - 'gradle.properties'
+          - 'gradle/**/*'
+          - 'gradlew'
+          - 'gradlew.bat'
 
 "mod-compat":
-  - src/baseline/**/*
-  - src/latest/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/baseline/**/*'
+          - 'src/latest/**/*'
 
 "security":
-  - src/main/kotlin/**/infrastructure/security/**/*
-  - src/main/kotlin/**/domain/exception/**/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/kotlin/**/infrastructure/security/**/*'
+          - 'src/main/kotlin/**/domain/exception/**/*'
