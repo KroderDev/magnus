@@ -20,6 +20,13 @@ interface MessageBus {
     fun subscribe(channel: String, callback: (message: String) -> Unit)
 
     /**
+     * Checks if the message bus is currently actively subscribed to a channel.
+     * @param channel The channel name.
+     * @return True if actively subscribed.
+     */
+    fun isSubscribed(channel: String): Boolean = false
+
+    /**
      * Closes the connection to the message bus.
      */
     fun close()

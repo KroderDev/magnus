@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import java.util.UUID
 
 @Testcontainers
@@ -20,7 +21,7 @@ class PostgresPlayerRepositoryTest {
 
     companion object {
         @Container
-        val postgres = PostgreSQLContainer("postgres:16-alpine")
+        val postgres = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
 
         @JvmStatic
         @BeforeAll

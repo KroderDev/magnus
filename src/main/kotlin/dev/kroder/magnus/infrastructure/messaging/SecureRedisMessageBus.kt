@@ -148,6 +148,10 @@ class SecureRedisMessageBus(
         }
     }
 
+    override fun isSubscribed(channel: String): Boolean {
+        return listeners[channel]?.pubSub?.isSubscribed == true
+    }
+
     @Suppress("NestedBlockDepth")
     override fun close() {
         isShuttingDown.set(true)

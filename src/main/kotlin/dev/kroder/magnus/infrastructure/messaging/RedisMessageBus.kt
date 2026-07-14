@@ -69,6 +69,10 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
         }.start()
     }
 
+    override fun isSubscribed(channel: String): Boolean {
+        return listeners[channel]?.isSubscribed == true
+    }
+
     override fun close() {
         logger.info("Closing all Redis subscriptions...")
         scope.cancel()
