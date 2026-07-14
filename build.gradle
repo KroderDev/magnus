@@ -1,8 +1,8 @@
 plugins {
 	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
-	id "org.jetbrains.kotlin.jvm" version "2.4.0"
-	id "org.jetbrains.kotlin.plugin.serialization" version "2.4.0"
+	id "org.jetbrains.kotlin.jvm" version "2.4.10"
+	id "org.jetbrains.kotlin.plugin.serialization" version "2.4.10"
 	id "io.gitlab.arturbosch.detekt" version "1.23.8"
 }
 
@@ -93,7 +93,7 @@ dependencies {
     implementation "org.postgresql:postgresql:${project.postgres_version}"
     include "org.postgresql:postgresql:${project.postgres_version}"
 
-    testImplementation "org.junit.jupiter:junit-jupiter:6.1.1"
+    testImplementation "org.junit.jupiter:junit-jupiter:6.1.2"
     testImplementation "io.mockk:mockk:1.14.11"
     testImplementation "org.jetbrains.kotlin:kotlin-test"
 
