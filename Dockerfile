@@ -1,5 +1,7 @@
 FROM eclipse-temurin:25-jdk-alpine
 
+RUN apk upgrade --no-cache libexpat expat
+
 WORKDIR /app
 
 # Copy gradle wrapper and settings
