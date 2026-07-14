@@ -1,5 +1,62 @@
 # Changelog
 
+## [1.4.0](https://github.com/KroderDev/magnus/compare/v1.3.3...v1.4.0) (2026-07-14)
+
+
+### Features
+
+* increase signature timestamp tolerance to 60s and make configurable ([db9ecd0](https://github.com/KroderDev/magnus/commit/db9ecd03b03e492eb2f2bf1c1d75f5c14eea571e))
+* **security:** increase signature timestamp tolerance and make configurable ([c21d9ba](https://github.com/KroderDev/magnus/commit/c21d9ba3f8b2f5e145a84255d3398fd3c3dc6c13))
+* **server-state:** publish read-only server facts ([a1a1fcb](https://github.com/KroderDev/magnus/commit/a1a1fcbfe0d63b4ab1e50c035af71000d4ec9060))
+
+
+### Bug Fixes
+
+* **ci:** update labeler.yml syntax for actions/labeler v6 ([97681b9](https://github.com/KroderDev/magnus/commit/97681b9c0cf68af2cb8662a17cc276f7ca2bb5de))
+* **deps:** update Testcontainers 2.0.5 module artifact names and harden pub/sub test synchronization ([8a1a208](https://github.com/KroderDev/magnus/commit/8a1a208bb49c652f60fe0c4062c685987031bba7))
+* **security:** upgrade libexpat and p11-kit to resolve CVE-2026-56408 and CVE-2026-2100 ([0c7e36f](https://github.com/KroderDev/magnus/commit/0c7e36f1130b9557b7ec621921b56bb85e3769ba))
+* **security:** upgrade libexpat to resolve CVE-2026-56408 ([7b599a3](https://github.com/KroderDev/magnus/commit/7b599a39f7cf06607f72629f9a665daddfe9173b))
+* **security:** upgrade p11-kit and p11-kit-trust to resolve CVE-2026-2100 ([c905fc6](https://github.com/KroderDev/magnus/commit/c905fc64e18aa180549bda761b2ffdc091b684d5))
+
+
+### Performance Improvements
+
+* centralize Json instances across services and repositories ([c58fc2f](https://github.com/KroderDev/magnus/commit/c58fc2f3a90544efe16024cbe2b01879d2890e1f))
+* centralize Json instances across services and repositories ([a375fe0](https://github.com/KroderDev/magnus/commit/a375fe0892191a285780f28fdc0f818a7e9f4f75))
+* debounce cleanup iteration and short-circuit backup recovery checks ([7c603de](https://github.com/KroderDev/magnus/commit/7c603de2488664464f68b4839312052339006dbe))
+* debounce stale entry cleanups and optimize backup scanning ([e77450d](https://github.com/KroderDev/magnus/commit/e77450d3001fa1189ee9f8b0ef8c6e586d9a7f1c))
+* enable non-blocking async persistence and parallel batch saving ([dc4e4c9](https://github.com/KroderDev/magnus/commit/dc4e4c9ab5736f21966d38b3e1362a4885331136))
+* enable non-blocking async persistence and parallel batch saving ([27f63cd](https://github.com/KroderDev/magnus/commit/27f63cd335d911e688ce21127916068a601751b1))
+* optimize Redis connection pooling and pub/sub thread management ([1ad8686](https://github.com/KroderDev/magnus/commit/1ad868652d33919db1e1cf434b5397b44d5d35a5))
+* optimize Redis connection pooling and pub/sub thread management ([428f607](https://github.com/KroderDev/magnus/commit/428f607d2ce179e2e2268f9424cca904d8b0f241))
+
+
+### Documentation
+
+* update README with signatureTimestampToleranceMs and 60s tolerance ([bfcdabf](https://github.com/KroderDev/magnus/commit/bfcdabf0c245836aeba8fe9d2bb0f4cc4fb23362))
+
+
+### Tests
+
+* stub hasAnyBackups and test short-circuit behavior in BackupRecoveryServiceTest ([4146c77](https://github.com/KroderDev/magnus/commit/4146c7775dec3a8d2a0f70bb44f20712d989bbf8))
+
+
+### Build System
+
+* **deps:** bump actions/labeler from 4 to 6 ([0f5df88](https://github.com/KroderDev/magnus/commit/0f5df88bc8cf535b5ce18c6e5b6dab7d81ea3feb))
+* **deps:** bump actions/labeler from 4 to 6 ([156ffc1](https://github.com/KroderDev/magnus/commit/156ffc1ab968dfd13a6831e9d841e79b5e518975))
+* **deps:** bump actions/upload-artifact from 4 to 7 ([8850869](https://github.com/KroderDev/magnus/commit/885086932a74be80b241fef0b56073deb00e662d))
+* **deps:** bump actions/upload-artifact from 4 to 7 ([88531a4](https://github.com/KroderDev/magnus/commit/88531a49e666626b3029125659d8b657c15bd832))
+* **deps:** bump org.testcontainers:testcontainers from 1.21.4 to 2.0.5 ([0d1f348](https://github.com/KroderDev/magnus/commit/0d1f34838c24a51813179f5ac99968a4dfce2cb9))
+* **deps:** bump the minor-and-patch group across 1 directory with 3 updates ([057473c](https://github.com/KroderDev/magnus/commit/057473c5349b0e2e49ebf950052a4ae077bc4f20))
+* **deps:** bump the minor-and-patch group across 1 directory with 3 updates ([e2e6644](https://github.com/KroderDev/magnus/commit/e2e6644992ecc2b037523c5158c24665ac0e3383))
+
+
+### Miscellaneous Chores
+
+* merge main to get labeler fix ([1f158c6](https://github.com/KroderDev/magnus/commit/1f158c6a803db593d2ef53ee751e8c3bac798307))
+* normalize gradlew.bat line endings ([286b535](https://github.com/KroderDev/magnus/commit/286b535c1440e14389329bc7197b5979357384bb))
+
 ## [1.3.3](https://github.com/KroderDev/magnus/compare/v1.3.2...v1.3.3) (2026-07-01)
 
 
