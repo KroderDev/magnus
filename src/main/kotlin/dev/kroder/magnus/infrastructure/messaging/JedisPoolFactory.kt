@@ -19,11 +19,15 @@ import javax.net.ssl.TrustManagerFactory
 object JedisPoolFactory {
 
     private const val DEFAULT_TIMEOUT_MS = 2000
-    private const val POOL_MAX_TOTAL = 16
-    private const val POOL_MAX_IDLE = 8
-    private const val POOL_MIN_IDLE = 2
+    private const val POOL_MAX_TOTAL = 64
+    private const val POOL_MAX_IDLE = 32
+    private const val POOL_MIN_IDLE = 8
     private const val POOL_MAX_WAIT_SECONDS = 5L
+    private const val POOL_EVICTION_RUNS_SECONDS = 30L
+    private const val POOL_IDLE_TIME_MINUTES = 1L
     private val POOL_MAX_WAIT = java.time.Duration.ofSeconds(POOL_MAX_WAIT_SECONDS)
+    private val POOL_EVICTION_RUNS = java.time.Duration.ofSeconds(POOL_EVICTION_RUNS_SECONDS)
+    private val POOL_IDLE_TIME = java.time.Duration.ofMinutes(POOL_IDLE_TIME_MINUTES)
 
     private val logger = LoggerFactory.getLogger("magnus-jedis-factory")
 
@@ -53,8 +57,11 @@ object JedisPoolFactory {
             maxTotal = POOL_MAX_TOTAL
             maxIdle = POOL_MAX_IDLE
             minIdle = POOL_MIN_IDLE
-            testOnBorrow = true
+            testOnBorrow = false
             testWhileIdle = true
+            setTimeBetweenEvictionRuns(POOL_EVICTION_RUNS)
+            setMinEvictableIdleDuration(POOL_IDLE_TIME)
+            numTestsPerEvictionRun = -1
             // Block for at most 5 seconds when pool is exhausted
             blockWhenExhausted = true
             setMaxWait(POOL_MAX_WAIT)

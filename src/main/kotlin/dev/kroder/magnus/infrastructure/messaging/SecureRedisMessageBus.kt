@@ -6,6 +6,7 @@ import dev.kroder.magnus.domain.messaging.MessageBus
 import dev.kroder.magnus.infrastructure.security.MessageSigner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -151,6 +152,7 @@ class SecureRedisMessageBus(
     override fun close() {
         isShuttingDown.set(true)
         logger.info("Closing all Redis subscriptions...")
+        scope.cancel()
 
         listeners.values.forEach { subscription ->
             try {
