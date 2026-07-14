@@ -1,6 +1,6 @@
 FROM eclipse-temurin:25-jdk-alpine
 
-RUN apk upgrade --no-cache libexpat expat
+RUN apk upgrade --no-cache libexpat expat p11-kit p11-kit-trust
 
 WORKDIR /app
 
