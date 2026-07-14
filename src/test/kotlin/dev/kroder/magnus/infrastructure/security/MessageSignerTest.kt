@@ -52,7 +52,7 @@ class MessageSignerTest {
         val originalMessage = """{"test": "hello world"}"""
 
         // Create a message with old timestamp manually
-        val oldTimestamp = System.currentTimeMillis() - 60_000 // 60 seconds old
+        val oldTimestamp = System.currentTimeMillis() - 120_000 // 120 seconds old
         val dataToSign = "$oldTimestamp|$originalMessage"
 
         // Use reflection to access private method for testing
@@ -62,7 +62,7 @@ class MessageSignerTest {
 
         val oldMessage = "$signature|$dataToSign"
 
-        // Should be rejected due to age (default 30s max)
+        // Should be rejected due to age (default 60s max)
         val verified = signer.verify(oldMessage)
 
         assertNull(verified)
@@ -73,10 +73,48 @@ class MessageSignerTest {
         val originalMessage = """{"test": "hello world"}"""
         val signed = signer.sign(originalMessage)
 
-        // Immediately verify (within 30 seconds)
-        val verified = signer.verify(signed, maxAgeMs = 30_000)
+        // Immediately verify (within tolerance)
+        val verified = signer.verify(signed, toleranceMs = 30_000)
 
         assertEquals(originalMessage, verified)
+    }
+
+    @Test
+    fun `should accept message with future timestamp within tolerance window`() {
+        val originalMessage = """{"test": "hello world"}"""
+
+        // Create a message with future timestamp (e.g., 15 seconds in the future due to clock drift)
+        val futureTimestamp = System.currentTimeMillis() + 15_000
+        val dataToSign = "$futureTimestamp|$originalMessage"
+
+        val signMethod = MessageSigner::class.java.getDeclaredMethod("computeHmac", String::class.java)
+        signMethod.isAccessible = true
+        val signature = signMethod.invoke(signer, dataToSign) as String
+
+        val futureMessage = "$signature|$dataToSign"
+
+        val verified = signer.verify(futureMessage, toleranceMs = 30_000)
+
+        assertEquals(originalMessage, verified)
+    }
+
+    @Test
+    fun `should reject message with future timestamp beyond tolerance window`() {
+        val originalMessage = """{"test": "hello world"}"""
+
+        // Create a message with future timestamp (e.g., 90 seconds in the future)
+        val futureTimestamp = System.currentTimeMillis() + 90_000
+        val dataToSign = "$futureTimestamp|$originalMessage"
+
+        val signMethod = MessageSigner::class.java.getDeclaredMethod("computeHmac", String::class.java)
+        signMethod.isAccessible = true
+        val signature = signMethod.invoke(signer, dataToSign) as String
+
+        val futureMessage = "$signature|$dataToSign"
+
+        val verified = signer.verify(futureMessage, toleranceMs = 60_000)
+
+        assertNull(verified)
     }
 
     @Test

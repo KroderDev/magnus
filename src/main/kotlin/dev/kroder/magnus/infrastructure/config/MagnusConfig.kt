@@ -34,6 +34,7 @@ data class MagnusConfig(
     val enableMessageSigning: Boolean = true, // Secure by default
     val messageSigningSecret: String? = null,
     val maxMessageSizeBytes: Int = 65536, // 64KB limit
+    val signatureTimestampToleranceMs: Long = 60_000, // 60 seconds tolerance for clock drift and message age
 
     // Redis Resilience Settings
     val subscriptionRetryDelayMs: Long = 5000,

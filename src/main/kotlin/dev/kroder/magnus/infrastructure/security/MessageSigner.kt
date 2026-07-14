@@ -37,13 +37,13 @@ class MessageSigner(private val secret: String) {
 
     /**
      * Verifies a signed message and extracts the original payload.
-     * Returns null if signature is invalid or message is too old.
+     * Returns null if signature is invalid or message timestamp drift/age exceeds tolerance.
      *
      * @param signedMessage The message to verify (format: "signature|timestamp|payload")
-     * @param maxAgeMs Maximum age of the message in milliseconds (default 30s)
+     * @param toleranceMs Maximum allowed timestamp difference (age or future drift) in milliseconds (default 60s)
      * @return The original payload if valid, null otherwise
      */
-    fun verify(signedMessage: String, maxAgeMs: Long = 30_000): String? {
+    fun verify(signedMessage: String, toleranceMs: Long = 60_000): String? {
         val parts = signedMessage.split("|", limit = SIGNED_MESSAGE_PARTS)
         if (parts.size != SIGNED_MESSAGE_PARTS) return null
 
@@ -54,9 +54,9 @@ class MessageSigner(private val secret: String) {
 
         var result: String? = null
         if (timestamp != null) {
-            // Check message age (replay attack prevention)
+            // Check message age and clock drift (replay attack prevention and drift tolerance)
             val messageAge = System.currentTimeMillis() - timestamp
-            if (messageAge >= 0 && messageAge <= maxAgeMs) {
+            if (kotlin.math.abs(messageAge) <= toleranceMs) {
                 // Verify HMAC signature
                 val expectedSignature = computeHmac("$timestampStr|$payload")
                 if (timingSafeEquals(signature, expectedSignature)) {

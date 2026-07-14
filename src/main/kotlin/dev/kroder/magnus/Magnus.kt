@@ -131,7 +131,8 @@ object Magnus : ModInitializer {
             signer = messageSigner,
             maxPayloadSize = config.maxMessageSizeBytes,
             retryDelayMs = config.subscriptionRetryDelayMs,
-            maxRetries = config.maxSubscriptionRetries
+            maxRetries = config.maxSubscriptionRetries,
+            signatureTimestampToleranceMs = config.signatureTimestampToleranceMs
         )
 
         // Register modules
