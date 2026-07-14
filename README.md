@@ -41,7 +41,7 @@ A modular, high-performance, and resilient synchronization suite for Minecraft F
 |---------|---------|-------------|
 | **Message Signing** | ✅ Enabled | HMAC-SHA256 prevents message injection attacks |
 | **Auto-Generated Secret** | ✅ | 32-byte cryptographic secret generated on first run |
-| **Replay Prevention** | 30 sec | Messages older than 30 seconds are rejected |
+| **Replay & Drift Prevention** | 60 sec | Messages older than 60 seconds or with timestamps >60s in the future are rejected |
 | **Payload Size Limits** | 64KB | Prevents DoS via oversized messages |
 | **SSL/TLS Support** | Optional | Encrypt Redis connections |
 
@@ -68,6 +68,7 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
     "enableSessionLock": false,
     "enableMessageSigning": true,
     "messageSigningSecret": "auto-generated-on-first-run",
+    "signatureTimestampToleranceMs": 60000,
     "redisSsl": false,
     "serverStateHeartbeatIntervalMs": 2500
 }
@@ -89,6 +90,7 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
 | `enableGlobalServerState` | `false` | Publish read-only live server facts for agent tools |
 | `enableSessionLock` | `false` | Enable session locking to prevent concurrent logins |
 | `enableMessageSigning` | `true` | Enable HMAC message signing (recommended) |
+| `signatureTimestampToleranceMs` | `60000` | HMAC signature timestamp tolerance in milliseconds (for message age and clock drift) |
 | `redisSsl` | `false` | Enable SSL/TLS for Redis connections |
 | `serverStateHeartbeatIntervalMs` | `2500` | Server-state heartbeat interval in milliseconds |
 
