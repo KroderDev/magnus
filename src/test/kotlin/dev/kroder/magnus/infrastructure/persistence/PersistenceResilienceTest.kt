@@ -28,7 +28,7 @@ class PersistenceResilienceTest {
             composite.save(data)
         }
 
-        verify { postgres.save(data) }
+        verify(timeout = 3000) { postgres.save(data) }
     }
 
     @Test

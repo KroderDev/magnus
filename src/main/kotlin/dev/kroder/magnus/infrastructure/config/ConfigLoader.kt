@@ -11,16 +11,13 @@ import java.security.SecureRandom
 import java.util.Base64
 
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import dev.kroder.magnus.domain.model.MagnusPrettyJson
 
 object ConfigLoader {
     private val logger = LoggerFactory.getLogger("magnus-config")
     private const val SECRET_BYTE_LENGTH = 32
 
-    private val json = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-    }
+    private val json = MagnusPrettyJson
 
     fun load(configDir: java.nio.file.Path? = null): MagnusConfig {
         val dir = configDir ?: FabricLoader.getInstance().configDir

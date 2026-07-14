@@ -4,8 +4,8 @@ package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
 import dev.kroder.magnus.domain.model.ChatMessage
+import dev.kroder.magnus.domain.model.MagnusJson
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import net.minecraft.text.Text
 import org.slf4j.LoggerFactory
@@ -19,7 +19,7 @@ class GlobalChatService(
     private val serverName: String
 ) {
     private val logger = LoggerFactory.getLogger("magnus-global-chat")
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = MagnusJson
 
     companion object {
         const val CHANNEL = "magnus:chat"
