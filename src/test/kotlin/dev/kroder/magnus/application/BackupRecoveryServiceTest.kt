@@ -6,6 +6,7 @@ import dev.kroder.magnus.infrastructure.persistence.local.LocalBackupRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -33,6 +34,11 @@ class BackupRecoveryServiceTest {
         activeEffectsNbt = "[]",
         lastUpdated = 2000L
     )
+
+    @BeforeEach
+    fun setup() {
+        every { localBackup.hasAnyBackups() } returns true
+    }
 
     @Test
     fun `should recover backup if primary is empty`() {
@@ -90,5 +96,18 @@ class BackupRecoveryServiceTest {
         // Then
         verify(exactly = 0) { primaryRepo.save(any()) }
         verify(exactly = 0) { localBackup.deleteFile(any()) }
+    }
+
+    @Test
+    fun `should short-circuit and skip disk scan when no backups pending`() {
+        // Given
+        every { localBackup.hasAnyBackups() } returns false
+
+        // When
+        service.processBackups()
+
+        // Then
+        verify(exactly = 0) { localBackup.findAllStartups() }
+        verify(exactly = 0) { primaryRepo.save(any()) }
     }
 }

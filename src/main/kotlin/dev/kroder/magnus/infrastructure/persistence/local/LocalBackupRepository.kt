@@ -94,10 +94,16 @@ class LocalBackupRepository(
         return pendingBackups.contains(uuid)
     }
 
+    /**
+     * Checks if any pending backups exist in the dirty set without touching disk (O(1)).
+     */
+    fun hasAnyBackups(): Boolean {
+        return pendingBackups.isNotEmpty()
+    }
+
     fun findAllStartups(): List<PlayerData> {
-        // Use the index to find files faster or just scan directory (safer for janitor)
-        // For Janitor, we stick to directory scan to be source of truth
-        val files = rootDir.listFiles { _, name -> name.endsWith(".json") } ?: return emptyList()
+        if (pendingBackups.isEmpty()) return emptyList()
+        val files = rootDir.listFiles { _, name -> name.endsWith(".json") } ?: emptyArray()
         return files.mapNotNull { file ->
             try {
                 val content = Files.readString(file.toPath())

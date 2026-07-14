@@ -18,6 +18,7 @@ import kotlinx.serialization.encodeToString
 import net.minecraft.server.MinecraftServer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 
 private const val MINECRAFT_DAY_LENGTH = 24_000L
 private const val SUNRISE_END = 1_000L
@@ -41,11 +42,13 @@ class GlobalServerStateService(
     private var heartbeatJob: Job? = null
 
     private val serverStates = ConcurrentHashMap<String, ServerStateInfo>()
+    private val lastCleanup = AtomicLong(0L)
 
     companion object {
         const val CHANNEL = "magnus:serverstate"
         const val HEARTBEAT_INTERVAL_MS = 2500L
         private const val STALE_TIMEOUT_MS = 10_000L
+        private const val CLEANUP_INTERVAL_MS = 1000L
     }
 
     fun startHeartbeat(server: MinecraftServer) {
@@ -129,6 +132,8 @@ class GlobalServerStateService(
 
     private fun cleanupStaleEntries() {
         val now = System.currentTimeMillis()
+        if (now - lastCleanup.get() < CLEANUP_INTERVAL_MS) return
+        lastCleanup.set(now)
         serverStates.entries.removeIf { (name, info) ->
             name != serverName && (now - info.timestamp) > STALE_TIMEOUT_MS
         }
