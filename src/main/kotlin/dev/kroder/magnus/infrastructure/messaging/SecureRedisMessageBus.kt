@@ -18,6 +18,7 @@ private const val DEFAULT_MAX_PAYLOAD_SIZE = 65536
 private const val DEFAULT_RETRY_DELAY_MS = 5000L
 private const val DEFAULT_MAX_RETRIES = 10
 private const val MAX_BACKOFF_EXPONENT = 5
+private const val DEFAULT_SIGNATURE_TIMESTAMP_TOLERANCE_MS = 60_000L
 
 /**
  * Hardened Redis MessageBus with security and resilience features.
@@ -36,7 +37,8 @@ class SecureRedisMessageBus(
     private val signer: MessageSigner? = null,
     private val maxPayloadSize: Int = DEFAULT_MAX_PAYLOAD_SIZE,
     private val retryDelayMs: Long = DEFAULT_RETRY_DELAY_MS,
-    private val maxRetries: Int = DEFAULT_MAX_RETRIES
+    private val maxRetries: Int = DEFAULT_MAX_RETRIES,
+    private val signatureTimestampToleranceMs: Long = DEFAULT_SIGNATURE_TIMESTAMP_TOLERANCE_MS
 ) : MessageBus {
 
     private val logger = LoggerFactory.getLogger("magnus-redis-bus")
@@ -90,8 +92,8 @@ class SecureRedisMessageBus(
 
                     // Signature verification if enabled
                     val payload = if (signer != null) {
-                        signer.verify(msg) ?: run {
-                            logger.warn("Dropping message with invalid/expired signature on '$ch'")
+                        signer.verify(msg, signatureTimestampToleranceMs) ?: run {
+                            logger.debug("Dropping message with invalid/expired signature on '$ch'")
                             return
                         }
                     } else {

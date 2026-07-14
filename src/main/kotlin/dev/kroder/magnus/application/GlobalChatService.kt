@@ -57,10 +57,12 @@ class GlobalChatService(
         try {
             val message = json.decodeFromString<ChatMessage>(payload)
 
-            // Ignore messages from this server to prevent echo
-            if (message.serverName == serverName) return
-
-            if (message.targetServers != null && serverName !in message.targetServers) return
+            // Ignore messages from this server or not targeted to this server
+            if (message.serverName == serverName ||
+                (message.targetServers != null && serverName !in message.targetServers)
+            ) {
+                return
+            }
 
             // Broadcast raw message to all local players
             // The message is sent as-is to preserve any formatting from the source server

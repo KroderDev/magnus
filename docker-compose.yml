@@ -6,7 +6,7 @@ services:
     volumes:
       - .:/app
       - gradle-cache:/root/.gradle
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /app
     environment:
       POSTGRES_HOST: postgres
@@ -16,6 +16,10 @@ services:
       POSTGRES_PASSWORD: magnus
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      TESTCONTAINERS_RYUK_DISABLED: "true"
+      TESTCONTAINERS_HOST_OVERRIDE: "host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     stdin_open: true
     tty: true
 
