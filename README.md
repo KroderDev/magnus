@@ -1,13 +1,16 @@
 # Magnus (Server-Side)
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/KroderDev/magnus/build.yml?branch=master&style=flat-square&label=Build)
+![Build Status](https://img.shields.io/github/actions/workflow/status/KroderDev/magnus/build.yml?branch=main&style=flat-square&label=Build)
 ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1--1.21.11-brown?style=flat-square&logo=minecraft)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue?style=flat-square&logo=fabric)
 ![Kotlin](https://img.shields.io/badge/Language-Kotlin-purple?style=flat-square&logo=kotlin)
-![License](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)
-![GitHub Tag](https://img.shields.io/github/v/tag/KroderDev/magnus?style=flat-square&label=GitHub&color=green)
+![GitHub Release](https://img.shields.io/github/v/release/KroderDev/magnus?style=flat-square&label=Release&color=green)
 [![Modrinth Version](https://img.shields.io/modrinth/v/magnus?style=flat-square&logo=modrinth&color=00AF5C&label=Modrinth)](https://modrinth.com/mod/magnus)
 [![CurseForge Version](https://img.shields.io/curseforge/v/1448049?style=flat-square&logo=curseforge&color=F16436&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/magnus)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Trivy](https://img.shields.io/badge/security-Trivy-1904DA?style=flat-square&logo=trivy)
+![License](https://img.shields.io/badge/License-LGPL_v3-blue?style=flat-square)
 
 
 A modular, high-performance, and resilient synchronization suite for Minecraft Fabric servers. Features real-time inventory sync, cross-server chat, and global player management.
@@ -38,7 +41,7 @@ A modular, high-performance, and resilient synchronization suite for Minecraft F
 |---------|---------|-------------|
 | **Message Signing** | ✅ Enabled | HMAC-SHA256 prevents message injection attacks |
 | **Auto-Generated Secret** | ✅ | 32-byte cryptographic secret generated on first run |
-| **Replay Prevention** | 30 sec | Messages older than 30 seconds are rejected |
+| **Replay & Drift Prevention** | 60 sec | Messages older than 60 seconds or with timestamps >60s in the future are rejected |
 | **Payload Size Limits** | 64KB | Prevents DoS via oversized messages |
 | **SSL/TLS Support** | Optional | Encrypt Redis connections |
 
@@ -61,10 +64,13 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
     "enableInventorySync": true,
     "enableGlobalChat": false,
     "enableGlobalPlayerList": false,
+    "enableGlobalServerState": false,
     "enableSessionLock": false,
     "enableMessageSigning": true,
     "messageSigningSecret": "auto-generated-on-first-run",
-    "redisSsl": false
+    "signatureTimestampToleranceMs": 60000,
+    "redisSsl": false,
+    "serverStateHeartbeatIntervalMs": 2500
 }
 ```
 
@@ -81,9 +87,12 @@ Magnus requires a **PostgreSQL** database and a **Redis** instance to function.
 | `enableInventorySync` | `true` | Enable inventory/player data synchronization. Disable for lobby servers. |
 | `enableGlobalChat` | `false` | Enable cross-server chat synchronization |
 | `enableGlobalPlayerList` | `false` | Enable global player list and `/glist` command |
+| `enableGlobalServerState` | `false` | Publish read-only live server facts for agent tools |
 | `enableSessionLock` | `false` | Enable session locking to prevent concurrent logins |
 | `enableMessageSigning` | `true` | Enable HMAC message signing (recommended) |
+| `signatureTimestampToleranceMs` | `60000` | HMAC signature timestamp tolerance in milliseconds (for message age and clock drift) |
 | `redisSsl` | `false` | Enable SSL/TLS for Redis connections |
+| `serverStateHeartbeatIntervalMs` | `2500` | Server-state heartbeat interval in milliseconds |
 
 ## Commands
 

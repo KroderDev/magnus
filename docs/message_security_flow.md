@@ -52,9 +52,9 @@ sequenceDiagram
         Receiver->>Receiver: Extract payload
         Receiver->>Receiver: Process message normally
     else Invalid Signature
-        Receiver->>Receiver: Log warning, drop message
-    else Expired (>30s old)
-        Receiver->>Receiver: Log warning, drop message
+        Receiver->>Receiver: Log debug, drop message
+    else Expired or Drifted beyond tolerance (default >60s)
+        Receiver->>Receiver: Log debug, drop message
     end
 ```
 
@@ -88,6 +88,7 @@ Security is **enabled by default**. The signing secret is auto-generated on firs
   "enableMessageSigning": true,
   "messageSigningSecret": "auto-generated-32-byte-base64-secret",
   "maxMessageSizeBytes": 65536,
+  "signatureTimestampToleranceMs": 60000,
   "redisSsl": false
 }
 ```

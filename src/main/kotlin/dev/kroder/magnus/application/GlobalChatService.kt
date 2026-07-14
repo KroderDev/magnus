@@ -1,9 +1,11 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
 import dev.kroder.magnus.domain.model.ChatMessage
+import dev.kroder.magnus.domain.model.MagnusJson
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import net.minecraft.text.Text
 import org.slf4j.LoggerFactory
@@ -17,7 +19,7 @@ class GlobalChatService(
     private val serverName: String
 ) {
     private val logger = LoggerFactory.getLogger("magnus-global-chat")
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = MagnusJson
 
     companion object {
         const val CHANNEL = "magnus:chat"
@@ -51,21 +53,25 @@ class GlobalChatService(
      */
     fun onMessageReceived(payload: String, server: MinecraftServer?) {
         if (server == null) return
-        
+
         try {
             val message = json.decodeFromString<ChatMessage>(payload)
-            
-            // Ignore messages from this server to prevent echo
-            if (message.serverName == serverName) return
-            
+
+            // Ignore messages from this server or not targeted to this server
+            if (message.serverName == serverName ||
+                (message.targetServers != null && serverName !in message.targetServers)
+            ) {
+                return
+            }
+
             // Broadcast raw message to all local players
             // The message is sent as-is to preserve any formatting from the source server
             val text = Text.literal("<${message.playerName}> ${message.rawMessage}")
-            
+
             server.playerManager.playerList.forEach { player ->
                 player.sendMessage(text, false)
             }
-            
+
             logger.debug("Received chat from ${message.serverName}: ${message.playerName}")
         } catch (e: Exception) {
             logger.error("Failed to process incoming chat message: ${e.message}", e)

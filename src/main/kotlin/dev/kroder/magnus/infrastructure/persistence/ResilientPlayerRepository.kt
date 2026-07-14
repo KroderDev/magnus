@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.persistence
 
 import dev.kroder.magnus.domain.exception.DataUnavailableException
@@ -24,7 +26,11 @@ class ResilientPlayerRepository(
         try {
             primary.save(data)
         } catch (e: Exception) {
-            logger.error("Primary repository failed to save player ${data.username} (${data.uuid}). Failing over to LOCAL BACKUP.", e)
+            logger.error(
+                "Primary repository failed to save player ${data.username} (${data.uuid}). " +
+                    "Failing over to LOCAL BACKUP.",
+                e
+            )
             try {
                 backup.save(data)
                 logger.warn("Saved player ${data.username} to local backup successfully.")
@@ -38,7 +44,7 @@ class ResilientPlayerRepository(
         // 1. O(1) Check: Do we have a specific local backup for this player?
         // This is the "In-Memory Dirty Set" optimization.
         val hasLocalBackup = backup.hasBackup(uuid)
-        
+
         var remoteData: PlayerData? = null
         var remoteError: Exception? = null
 
@@ -51,36 +57,31 @@ class ResilientPlayerRepository(
         }
 
         // 3. Conflict Resolution (The "Freshness Check")
-        if (hasLocalBackup) {
-            val localData = backup.findByUuid(uuid)
-            
-            if (localData != null) {
-                // If remote is null (new player or DB down) -> Use Local
-                if (remoteData == null) {
-                    logger.warn("Using LOCAL backup for $uuid (Remote unavailable or null).")
-                    return localData
-                }
+        var result: PlayerData? = null
+        val localData = if (hasLocalBackup) backup.findByUuid(uuid) else null
 
-                // If both exist -> Compare Timestamps
-                if (localData.lastUpdated > remoteData.lastUpdated) {
-                    logger.warn("Using LOCAL backup for $uuid (Local is FRESHER: ${localData.lastUpdated} > ${remoteData.lastUpdated}). DB is stale.")
-                    return localData
-                } // else: Remote is newer or equal -> Use Remote
+        val useLocal = localData != null && (remoteData == null || localData.lastUpdated > remoteData.lastUpdated)
+
+        if (useLocal) {
+            val reason = if (remoteData == null) {
+                "Remote unavailable or null."
+            } else {
+                "Using LOCAL backup for $uuid (Local is FRESHER: ${localData!!.lastUpdated} > " +
+                    "${remoteData!!.lastUpdated}). DB is stale."
             }
+            logger.warn("Using LOCAL backup for $uuid ($reason)")
+            result = localData
+        } else if (remoteData != null) {
+            result = remoteData
         }
 
-        // 4. Return Remote if valid
-        if (remoteData != null) {
-            return remoteData
-        }
-
-        // 5. If Remote failed and we had no local backup -> CRITICAL FAIL
-        if (remoteError != null) {
+        // 4. If Remote failed and we had no local backup -> CRITICAL FAIL
+        if (result == null && remoteError != null) {
             throw DataUnavailableException("Database is down and no local backup found for $uuid", remoteError)
         }
 
-        // 6. Both are null (New Player)
-        return null
+        // 5. Both are null (New Player) or resolved result
+        return result
     }
 
     override fun deleteCache(uuid: UUID) {

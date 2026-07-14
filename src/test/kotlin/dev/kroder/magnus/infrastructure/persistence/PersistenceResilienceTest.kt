@@ -1,14 +1,17 @@
+@file:Suppress("WildcardImport", "NoWildcardImports")
+
 package dev.kroder.magnus.infrastructure.persistence
 
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import dev.kroder.magnus.infrastructure.persistence.redis.RedisPlayerRepository
 import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
-import java.util.*
+import java.util.UUID
 
 class PersistenceResilienceTest {
 
@@ -25,7 +28,7 @@ class PersistenceResilienceTest {
             composite.save(data)
         }
 
-        verify { postgres.save(data) }
+        verify(timeout = 3000) { postgres.save(data) }
     }
 
     @Test
@@ -49,7 +52,7 @@ class PersistenceResilienceTest {
     fun `RedisPlayerRepository should reject oversized payloads`() {
         val pool = mockk<JedisPool>()
         val repo = RedisPlayerRepository(pool, maxPayloadSize = 100)
-        
+
         // Create large username to exceed 100 bytes serialized
         val largeData = createSampleData(username = "A".repeat(200))
 
@@ -91,4 +94,3 @@ class PersistenceResilienceTest {
         )
     }
 }
-

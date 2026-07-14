@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory
 
 /**
  * Module for player inventory synchronization across servers.
- * 
- * This module handles loading player data (inventory, health, XP, etc.) 
+ *
+ * This module handles loading player data (inventory, health, XP, etc.)
  * when they join and saving it when they disconnect.
- * 
+ *
  * Enabled by default, but can be disabled for lobby/hub servers
  * where only global chat or tablist is needed.
  */
@@ -24,13 +24,13 @@ class InventorySyncModule(
     override val name = "Inventory Sync"
 
     private val logger = LoggerFactory.getLogger("magnus-inventory-sync")
-    
+
     private lateinit var playerEventListener: PlayerEventListener
 
     override fun onEnable() {
         playerEventListener = PlayerEventListener(syncService)
         playerEventListener.register()
-        
+
         logger.info("Inventory Sync module enabled - Player data will be synchronized")
     }
 
@@ -41,7 +41,7 @@ class InventorySyncModule(
     }
 
     /**
-     * Forcefully saves all online players. 
+     * Forcefully saves all online players.
      * Called during server shutdown to prevent race conditions.
      */
     fun forceSaveAllPlayers(players: List<ServerPlayerEntity>) {

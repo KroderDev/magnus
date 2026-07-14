@@ -3,7 +3,7 @@ package dev.kroder.magnus.infrastructure.config
 /**
  * Configuration for the Magnus Sync mod.
  * In a production environment, these values should be loaded from a .json or .toml file.
- * 
+ *
  * Functional Limits:
  * - This is a simple data holding class.
  * - Connection pooling settings are fixed for now.
@@ -18,23 +18,28 @@ data class MagnusConfig(
     val redisHost: String = "localhost",
     val redisPort: Int = 6379,
     val redisPass: String? = null,
-    
+
     // Server Identification
     val serverName: String = "default",
-    
+
     // Module Feature Flags
     val enableInventorySync: Boolean = true,
     val enableGlobalChat: Boolean = false,
     val enableGlobalPlayerList: Boolean = false,
+    val enableGlobalServerState: Boolean = false,
     val enableSessionLock: Boolean = false,
-    
+
     // Redis Security Settings
     val redisSsl: Boolean = false,
-    val enableMessageSigning: Boolean = true,  // Secure by default
+    val enableMessageSigning: Boolean = true, // Secure by default
     val messageSigningSecret: String? = null,
-    val maxMessageSizeBytes: Int = 65536,  // 64KB limit
-    
+    val maxMessageSizeBytes: Int = 65536, // 64KB limit
+    val signatureTimestampToleranceMs: Long = 60_000, // 60 seconds tolerance for clock drift and message age
+
     // Redis Resilience Settings
     val subscriptionRetryDelayMs: Long = 5000,
-    val maxSubscriptionRetries: Int = 10
+    val maxSubscriptionRetries: Int = 10,
+
+    // Agent Tooling Settings
+    val serverStateHeartbeatIntervalMs: Long = 2500
 )

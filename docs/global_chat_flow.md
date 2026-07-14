@@ -14,13 +14,13 @@ graph LR
         ServiceA -->|publish| BusA[SecureRedisMessageBus]
         BusA -->|sign + send| Redis[(Redis<br>magnus:chat)]
     end
-    
+
     subgraph "Server B"
         Redis -->|receive| BusB[SecureRedisMessageBus]
         BusB -->|verify + deliver| ServiceB[GlobalChatService]
         ServiceB -->|broadcast| PlayerB[All Players on B]
     end
-    
+
     subgraph "Attacker"
         Hacker[Malicious Client] -->|fake message| Redis
         Redis -->|rejected| BusB
@@ -46,9 +46,9 @@ sequenceDiagram
     GCS->>Bus: publish(channel, json)
     Bus->>Bus: sign(json) → hmac|timestamp|json
     Bus->>Redis: PUBLISH magnus:chat {signed}
-    
+
     Note over Redis: Redis broadcasts to all subscribers
-    
+
     Redis->>Bus2: onMessage callback
     Bus2->>Bus2: verify signature
     alt Valid Signature
@@ -85,9 +85,12 @@ sequenceDiagram
   "playerUuid": "uuid-string",
   "playerName": "PlayerName",
   "rawMessage": "Hello world!",
-  "timestamp": 1706654400000
+  "timestamp": 1706654400000,
+  "targetServers": ["lobby"]
 }
 ```
+
+`targetServers` is optional. When present, only servers listed there broadcast the message locally.
 
 ## Configuration
 

@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.infrastructure.module
 
 import dev.kroder.magnus.domain.module.MagnusModule
@@ -53,7 +55,7 @@ class ModuleManager {
             logger.debug("Cannot disable module '$id': Not active.")
             return
         }
-        
+
         val module = modules[id] ?: return
 
         try {

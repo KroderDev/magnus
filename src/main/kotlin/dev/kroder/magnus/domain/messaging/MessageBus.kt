@@ -18,7 +18,7 @@ interface MessageBus {
      * @param callback Function to execute when a message is received.
      */
     fun subscribe(channel: String, callback: (message: String) -> Unit)
-    
+
     /**
      * Closes the connection to the message bus.
      */

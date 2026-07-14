@@ -28,13 +28,15 @@ class ConfigLoaderTest {
     fun `should load existing config`(@TempDir tempDir: Path) {
         // Given
         val configFile = tempDir.resolve("magnus.json")
-        configFile.writeText("""
+        configFile.writeText(
+            """
             {
                 "postgresUrl": "jdbc:postgresql://remote:5432/magnus_prod",
                 "postgresUser": "admin",
                 "redisHost": "cache"
             }
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // When
         val config = ConfigLoader.load(tempDir)
@@ -59,7 +61,7 @@ class ConfigLoaderTest {
         // Then
         // Returns default object
         assertEquals("jdbc:postgresql://localhost:5432/magnus", config.postgresUrl)
-        
+
         // File content should remain broken (user needs to fix it manually)
         assertEquals(brokenContent, configFile.readText())
     }

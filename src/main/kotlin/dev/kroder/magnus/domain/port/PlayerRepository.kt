@@ -6,13 +6,13 @@ import java.util.UUID
 /**
  * Port interface for managing player data persistence and retrieval.
  * This interface decouples the domain logic from specific implementations like Postgres or Redis.
- * 
+ *
  * Functional Limits:
  * - Implementations must ensure thread-safety.
  * - Timeouts and connection errors should be handled by the implementation or a decorator.
  */
 interface PlayerRepository {
-    
+
     /**
      * Saves the player data to the primary storage (usually Redis + Postgres sync).
      * @param data The player data to persist.

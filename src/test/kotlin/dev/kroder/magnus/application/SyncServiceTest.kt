@@ -1,3 +1,5 @@
+@file:Suppress("WildcardImport", "NoWildcardImports")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.exception.SessionLockedException
@@ -5,7 +7,8 @@ import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import dev.kroder.magnus.domain.processing.LockManager
 import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -45,7 +48,7 @@ class SyncServiceTest {
         verify(exactly = 1) { repository.save(data) }
         verify(exactly = 1) { lockManager.unlock(uuid) }
     }
-    
+
     @Test
     fun `should unlock session even if save fails`() {
         val data = mockk<PlayerData>()
@@ -66,10 +69,10 @@ class SyncServiceTest {
         val player2 = mockk<PlayerData>()
         val uuid1 = UUID.randomUUID()
         val uuid2 = UUID.randomUUID()
-        
+
         every { player1.uuid } returns uuid1
         every { player2.uuid } returns uuid2
-        
+
         // player1 fails, player2 succeeds
         every { repository.save(player1) } throws RuntimeException("Connection lost")
         every { repository.save(player2) } just Runs

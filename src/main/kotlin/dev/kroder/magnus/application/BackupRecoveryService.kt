@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.port.PlayerRepository
@@ -12,10 +14,16 @@ import java.util.concurrent.TimeUnit
  */
 class BackupRecoveryService(
     private val localBackup: LocalBackupRepository,
-    private val primaryRepo: PlayerRepository // This should be the raw/composite repo, not the resilient one (to avoid loops)
+    // This should be the raw/composite repo, not the resilient one (to avoid loops)
+    private val primaryRepo: PlayerRepository
 ) {
     private val logger = LoggerFactory.getLogger("magnus-recovery")
     private val scheduler = Executors.newSingleThreadScheduledExecutor()
+
+    companion object {
+        private const val INITIAL_DELAY_MINUTES = 1L
+        private const val PERIOD_MINUTES = 5L
+    }
 
     fun start() {
         logger.info("Starting Backup Recovery Service (Janitor)...")
@@ -26,7 +34,7 @@ class BackupRecoveryService(
             } catch (e: Exception) {
                 logger.error("Error during recovery process", e)
             }
-        }, 1, 5, TimeUnit.MINUTES)
+        }, INITIAL_DELAY_MINUTES, PERIOD_MINUTES, TimeUnit.MINUTES)
     }
 
     fun shutdown() {
@@ -36,6 +44,7 @@ class BackupRecoveryService(
     /**
      * Scans and attempts to restore/merge backups.
      */
+    @Suppress("NestedBlockDepth")
     fun processBackups() {
         val backups = localBackup.findAllStartups()
         if (backups.isEmpty()) return
@@ -58,7 +67,10 @@ class BackupRecoveryService(
                 } else {
                     // DB has data. Compare timestamps.
                     if (backupData.lastUpdated > dbData.lastUpdated) {
-                        logger.info("Recovering ${backupData.username}: Local backup is NEWER (${backupData.lastUpdated} > ${dbData.lastUpdated}). Overwriting DB.")
+                        logger.info(
+                            "Recovering ${backupData.username}: Local backup is NEWER " +
+                                "(${backupData.lastUpdated} > ${dbData.lastUpdated}). Overwriting DB."
+                        )
                         primaryRepo.save(backupData)
                         localBackup.deleteFile(backupData.uuid)
                     } else {
@@ -66,7 +78,6 @@ class BackupRecoveryService(
                         localBackup.deleteFile(backupData.uuid) // Obsolete backup
                     }
                 }
-
             } catch (e: Exception) {
                 logger.warn("Skipping recovery for ${backupData.username}: DB might be down or error.", e)
             }

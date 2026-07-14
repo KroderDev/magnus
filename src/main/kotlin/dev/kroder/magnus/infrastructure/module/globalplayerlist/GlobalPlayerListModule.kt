@@ -23,7 +23,7 @@ class GlobalPlayerListModule(
     override val name = "Global Player List"
 
     private val logger = LoggerFactory.getLogger("magnus-global-playerlist")
-    
+
     private lateinit var playerListService: GlobalPlayerListService
     private var server: MinecraftServer? = null
 

@@ -1,0 +1,63 @@
+# Auto-label pull requests based on changed paths
+# See https://github.com/actions/labeler
+
+"domain":
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/domain/**/*'
+
+"application":
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/application/**/*'
+
+"infrastructure":
+  - changed-files:
+      - any-glob-to-any-file: 'src/main/kotlin/**/infrastructure/**/*'
+
+"client":
+  - changed-files:
+      - any-glob-to-any-file: 'src/client/**/*'
+
+"tests":
+  - changed-files:
+      - any-glob-to-any-file: 'src/test/**/*'
+
+"docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**/*'
+          - 'README.md'
+
+"docker":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - 'Dockerfile.dev'
+          - 'docker-compose.yml'
+
+"ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**/*'
+          - 'Makefile'
+
+"gradle":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'build.gradle'
+          - 'settings.gradle'
+          - 'gradle.properties'
+          - 'gradle/**/*'
+          - 'gradlew'
+          - 'gradlew.bat'
+
+"mod-compat":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/baseline/**/*'
+          - 'src/latest/**/*'
+
+"security":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/main/kotlin/**/infrastructure/security/**/*'
+          - 'src/main/kotlin/**/domain/exception/**/*'

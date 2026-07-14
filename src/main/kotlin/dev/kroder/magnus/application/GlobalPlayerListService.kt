@@ -1,11 +1,20 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
+import dev.kroder.magnus.domain.model.MagnusJson
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -19,20 +28,18 @@ class GlobalPlayerListService(
     private val serverName: String
 ) {
     private val logger = LoggerFactory.getLogger("magnus-global-playerlist")
-    private val json = Json { ignoreUnknownKeys = true }
-    
+    private val json = MagnusJson
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var heartbeatJob: Job? = null
-    
+
     // In-memory map: serverName -> ServerPlayerInfo
     private val serverPlayers = ConcurrentHashMap<String, ServerPlayerInfo>()
-    
-    // Timeout for stale entries (10 seconds - if no heartbeat in 10s, consider offline)
-    private val staleTimeoutMs = 10_000L
 
     companion object {
         const val CHANNEL = "magnus:playerlist"
         const val HEARTBEAT_INTERVAL_MS = 2500L // 2.5 seconds
+        private const val STALE_TIMEOUT_MS = 10_000L
     }
 
     /**
@@ -71,15 +78,15 @@ class GlobalPlayerListService(
                 name = player.gameProfile.name
             )
         }
-        
+
         val info = ServerPlayerInfo(
             serverName = serverName,
             players = players
         )
-        
+
         // Also update our own entry locally
         serverPlayers[serverName] = info
-        
+
         val payload = json.encodeToString(info)
         messageBus.publish(CHANNEL, payload)
     }
@@ -103,7 +110,7 @@ class GlobalPlayerListService(
     private fun cleanupStaleEntries() {
         val now = System.currentTimeMillis()
         serverPlayers.entries.removeIf { (name, info) ->
-            name != serverName && (now - info.timestamp) > staleTimeoutMs
+            name != serverName && (now - info.timestamp) > STALE_TIMEOUT_MS
         }
     }
 

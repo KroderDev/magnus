@@ -1,3 +1,5 @@
+@file:Suppress("TooGenericExceptionCaught", "SwallowedException", "TooManyFunctions")
+
 package dev.kroder.magnus.infrastructure.fabric
 
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -11,6 +13,8 @@ import net.minecraft.server.network.ServerPlayerEntity
 import java.util.Optional
 
 object NbtCompat {
+
+    private const val DEFAULT_NBT_LIST_TYPE = 10
 
     fun getExhaustion(manager: Any): Float {
         return try {
@@ -48,9 +52,11 @@ object NbtCompat {
             (opt as Optional<NbtList>).orElse(NbtList())
         } catch (e: NoSuchMethodException) {
             val method = NbtCompound::class.java.getMethod(
-                "getList", String::class.java, Int::class.javaPrimitiveType
+                "getList",
+                String::class.java,
+                Int::class.javaPrimitiveType
             )
-            method.invoke(compound, key, 10) as NbtList
+            method.invoke(compound, key, DEFAULT_NBT_LIST_TYPE) as NbtList
         }
     }
 
@@ -105,18 +111,22 @@ object NbtCompat {
     ) {
         try {
             val method = EnderChestInventory::class.java.getMethod(
-                "writeNbt", NbtCompound::class.java, RegistryWrapper.WrapperLookup::class.java
+                "writeNbt",
+                NbtCompound::class.java,
+                RegistryWrapper.WrapperLookup::class.java
             )
             method.invoke(enderChest, compound, registryManager)
         } catch (e: NoSuchMethodException) {
             try {
                 val method = EnderChestInventory::class.java.getMethod(
-                    "writeNbt", NbtCompound::class.java
+                    "writeNbt",
+                    NbtCompound::class.java
                 )
                 method.invoke(enderChest, compound)
             } catch (e2: NoSuchMethodException) {
                 val method = EnderChestInventory::class.java.getMethod(
-                    "toNbtList", RegistryWrapper.WrapperLookup::class.java
+                    "toNbtList",
+                    RegistryWrapper.WrapperLookup::class.java
                 )
                 val list = method.invoke(enderChest, registryManager) as NbtList
                 compound.put("EnderItems", list)
@@ -131,13 +141,16 @@ object NbtCompat {
     ) {
         try {
             val method = EnderChestInventory::class.java.getMethod(
-                "readNbt", NbtCompound::class.java
+                "readNbt",
+                NbtCompound::class.java
             )
             method.invoke(enderChest, compound)
         } catch (e: NoSuchMethodException) {
             val list = getList(compound, "EnderItems")
             val method = EnderChestInventory::class.java.getMethod(
-                "readNbtList", NbtList::class.java, RegistryWrapper.WrapperLookup::class.java
+                "readNbtList",
+                NbtList::class.java,
+                RegistryWrapper.WrapperLookup::class.java
             )
             method.invoke(enderChest, list, registryManager)
         }
@@ -150,7 +163,8 @@ object NbtCompat {
         val compound = NbtCompound()
         try {
             val method = StatusEffectInstance::class.java.getMethod(
-                "writeNbt", RegistryWrapper.WrapperLookup::class.java
+                "writeNbt",
+                RegistryWrapper.WrapperLookup::class.java
             )
             val result = method.invoke(effect, registryManager)
             return result as NbtCompound
@@ -167,13 +181,16 @@ object NbtCompat {
     ): StatusEffectInstance? {
         return try {
             val method = StatusEffectInstance::class.java.getMethod(
-                "fromNbt", RegistryWrapper.WrapperLookup::class.java, NbtCompound::class.java
+                "fromNbt",
+                RegistryWrapper.WrapperLookup::class.java,
+                NbtCompound::class.java
             )
             val result = method.invoke(null, registryManager, nbt)
             (result as? Optional<*>)?.orElse(null) as? StatusEffectInstance
         } catch (e: NoSuchMethodException) {
             val method = StatusEffectInstance::class.java.getMethod(
-                "fromNbt", NbtCompound::class.java
+                "fromNbt",
+                NbtCompound::class.java
             )
             method.invoke(null, nbt) as? StatusEffectInstance
         }
