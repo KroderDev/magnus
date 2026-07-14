@@ -5,6 +5,7 @@ package dev.kroder.magnus.infrastructure.messaging
 import dev.kroder.magnus.domain.messaging.MessageBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import redis.clients.jedis.JedisPool
@@ -62,11 +63,15 @@ class RedisMessageBus(private val jedisPool: JedisPool) : MessageBus {
             } finally {
                 listeners.remove(channel)
             }
+        }.apply {
+            name = "magnus-redis-sub-$channel"
+            isDaemon = true
         }.start()
     }
 
     override fun close() {
         logger.info("Closing all Redis subscriptions...")
+        scope.cancel()
         listeners.values.forEach {
             try {
                 if (it.isSubscribed) it.unsubscribe()
