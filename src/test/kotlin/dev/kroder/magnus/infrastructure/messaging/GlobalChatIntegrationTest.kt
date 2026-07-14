@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import redis.clients.jedis.JedisPool
 
 import java.util.concurrent.CountDownLatch
@@ -34,7 +35,7 @@ class GlobalChatIntegrationTest {
     companion object {
         @Container
         @JvmStatic
-        val redis = RedisContainer("redis:7-alpine")
+        val redis = RedisContainer(DockerImageName.parse("redis:7-alpine"))
     }
 
     private lateinit var jedisPool: JedisPool
@@ -56,6 +57,15 @@ class GlobalChatIntegrationTest {
         jedisPool.close()
     }
 
+    private fun waitForSubscription(bus: RedisMessageBus, channel: String, timeoutMillis: Long = 5000) {
+        val start = System.currentTimeMillis()
+        while (System.currentTimeMillis() - start < timeoutMillis) {
+            if (bus.isSubscribed(channel)) return
+            Thread.sleep(50)
+        }
+        throw AssertionError("Timed out waiting for subscription to channel '$channel'")
+    }
+
     @Test
     fun `should publish and receive ChatMessage via Redis`() {
         val latch = CountDownLatch(1)
@@ -68,7 +78,7 @@ class GlobalChatIntegrationTest {
         }
 
         // Wait for subscription to be ready
-        Thread.sleep(500)
+        waitForSubscription(messageBus, "magnus:chat")
 
         // Publish a message
         val chatMessage = ChatMessage(
@@ -99,7 +109,7 @@ class GlobalChatIntegrationTest {
             latch.countDown()
         }
 
-        Thread.sleep(500)
+        waitForSubscription(messageBus, "magnus:playerlist")
 
         val playerInfo = ServerPlayerInfo(
             serverName = "lobby",
@@ -128,7 +138,7 @@ class GlobalChatIntegrationTest {
             latch.countDown()
         }
 
-        Thread.sleep(500)
+        waitForSubscription(messageBus, "magnus:serverstate")
 
         val stateInfo = ServerStateInfo(
             serverName = "survival",
@@ -178,7 +188,8 @@ class GlobalChatIntegrationTest {
             latch.countDown()
         }
 
-        Thread.sleep(500)
+        waitForSubscription(messageBus, "magnus:chat")
+        waitForSubscription(messageBus2, "magnus:chat")
 
         val chatMessage = ChatMessage(
             serverName = "creative",
@@ -209,7 +220,7 @@ class GlobalChatIntegrationTest {
             latch.countDown()
         }
 
-        Thread.sleep(500)
+        waitForSubscription(messageBus, "magnus:chat")
 
         // Publish many messages rapidly
         repeat(messageCount) { i ->

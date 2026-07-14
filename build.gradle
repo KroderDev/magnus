@@ -98,8 +98,8 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test"
 
     testImplementation "org.testcontainers:testcontainers:2.0.5"
-    testImplementation "org.testcontainers:junit-jupiter:2.0.5"
-    testImplementation "org.testcontainers:postgresql:2.0.5"
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter:2.0.5"
+    testImplementation "org.testcontainers:testcontainers-postgresql:2.0.5"
     testImplementation "com.redis:testcontainers-redis:2.2.4"
     
     // Coroutines test support
