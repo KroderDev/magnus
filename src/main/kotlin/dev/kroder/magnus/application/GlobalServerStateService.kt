@@ -3,6 +3,7 @@
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
+import dev.kroder.magnus.domain.model.MagnusJson
 import dev.kroder.magnus.domain.model.ServerStateInfo
 import dev.kroder.magnus.domain.model.WorldStateInfo
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -35,7 +35,7 @@ class GlobalServerStateService(
     private val heartbeatIntervalMs: Long = HEARTBEAT_INTERVAL_MS
 ) {
     private val logger = LoggerFactory.getLogger("magnus-global-server-state")
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = MagnusJson
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var heartbeatJob: Job? = null

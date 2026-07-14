@@ -3,6 +3,7 @@
 package dev.kroder.magnus.application
 
 import dev.kroder.magnus.domain.messaging.MessageBus
+import dev.kroder.magnus.domain.model.MagnusJson
 import dev.kroder.magnus.domain.model.PlayerEntry
 import dev.kroder.magnus.domain.model.ServerPlayerInfo
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -28,7 +28,7 @@ class GlobalPlayerListService(
     private val serverName: String
 ) {
     private val logger = LoggerFactory.getLogger("magnus-global-playerlist")
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = MagnusJson
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var heartbeatJob: Job? = null

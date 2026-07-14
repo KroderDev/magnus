@@ -2,9 +2,9 @@
 
 package dev.kroder.magnus.infrastructure.persistence.local
 
+import dev.kroder.magnus.domain.model.MagnusPrettyJson
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
-import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -23,10 +23,7 @@ class LocalBackupRepository(
     private val rootDir: File
 ) : PlayerRepository {
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = true
-    }
+    private val json = MagnusPrettyJson
 
     private val logger = LoggerFactory.getLogger("magnus-local-backup")
 

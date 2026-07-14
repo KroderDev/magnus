@@ -1,9 +1,9 @@
 package dev.kroder.magnus.infrastructure.persistence.redis
 
+import dev.kroder.magnus.domain.model.MagnusJson
 import dev.kroder.magnus.domain.model.PlayerData
 import dev.kroder.magnus.domain.port.PlayerRepository
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import redis.clients.jedis.JedisPool
 import java.util.UUID
@@ -19,7 +19,7 @@ class RedisPlayerRepository(
 ) : PlayerRepository {
 
     private val logger = LoggerFactory.getLogger("magnus-redis-repo")
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = MagnusJson
 
     override fun save(data: PlayerData) {
         val value = json.encodeToString(data)
