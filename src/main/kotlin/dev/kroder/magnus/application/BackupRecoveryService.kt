@@ -46,6 +46,7 @@ class BackupRecoveryService(
      */
     @Suppress("NestedBlockDepth")
     fun processBackups() {
+        if (!localBackup.hasAnyBackups()) return
         val backups = localBackup.findAllStartups()
         if (backups.isEmpty()) return
 

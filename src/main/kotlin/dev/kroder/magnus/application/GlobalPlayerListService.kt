@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import net.minecraft.server.MinecraftServer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Application service for global player list synchronization.
@@ -35,11 +36,13 @@ class GlobalPlayerListService(
 
     // In-memory map: serverName -> ServerPlayerInfo
     private val serverPlayers = ConcurrentHashMap<String, ServerPlayerInfo>()
+    private val lastCleanup = AtomicLong(0L)
 
     companion object {
         const val CHANNEL = "magnus:playerlist"
         const val HEARTBEAT_INTERVAL_MS = 2500L // 2.5 seconds
         private const val STALE_TIMEOUT_MS = 10_000L
+        private const val CLEANUP_INTERVAL_MS = 1000L
     }
 
     /**
@@ -109,6 +112,8 @@ class GlobalPlayerListService(
      */
     private fun cleanupStaleEntries() {
         val now = System.currentTimeMillis()
+        if (now - lastCleanup.get() < CLEANUP_INTERVAL_MS) return
+        lastCleanup.set(now)
         serverPlayers.entries.removeIf { (name, info) ->
             name != serverName && (now - info.timestamp) > STALE_TIMEOUT_MS
         }
