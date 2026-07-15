@@ -12,10 +12,72 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-24.04
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+      - name: Checkout Repository
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.release.outputs.tag_name }}
+
+      - name: Validate Gradle Wrapper
+        if: ${{ steps.release.outputs.release_created }}
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: Setup JDK 21
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+
+      - name: Setup Gradle
+        if: ${{ steps.release.outputs.release_created }}
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Make Gradlew Executable
+        if: ${{ steps.release.outputs.release_created }}
+        run: chmod +x ./gradlew
+
+      - name: Build Artifacts
+        if: ${{ steps.release.outputs.release_created }}
+        run: ./gradlew assemble
+
+      - name: Publish Mod
+        if: ${{ steps.release.outputs.release_created }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          github-tag: ${{ steps.release.outputs.tag_name }}
+          name: Magnus Sync ${{ steps.release.outputs.tag_name }}
+          version: ${{ steps.release.outputs.tag_name }}
+          version-type: release
+          changelog: ${{ steps.release.outputs.body }}
+          loaders: fabric
+          game-versions: ">=1.21.1 <1.21.12"
+          game-version-filter: releases
+          retry-attempts: 3
+          retry-delay: 10000
+
+          dependencies: |
+            fabric-api(required)
+            fabric-language-kotlin(required)
+
+          files: build/libs/!(*-dev|*-sources).jar
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          modrinth-id: 4AvJZ4tk
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1448049
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+      - name: Publish GitHub Release
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit ${{ steps.release.outputs.tag_name }} --draft=false
