@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.1](https://github.com/KroderDev/magnus/compare/v1.4.0...v1.4.1) (2026-07-17)
+
+
+### Bug Fixes
+
+* **fabric:** support remapped NBT runtime methods ([f0076a7](https://github.com/KroderDev/magnus/commit/f0076a77a18018736197fd4d7839d81821dc1b2a))
+
+
+### Continuous Integration
+
+* **release:** publish assets before immutable release ([4c2adbb](https://github.com/KroderDev/magnus/commit/4c2adbb03b3f19395cda604df6b365f23e90ecf7))
+
 ## [1.4.0](https://github.com/KroderDev/magnus/compare/v1.3.3...v1.4.0) (2026-07-14)
 
 
