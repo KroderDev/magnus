@@ -10,22 +10,31 @@ import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.registry.RegistryWrapper
 import net.minecraft.server.network.ServerPlayerEntity
+import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.util.Optional
 
 object NbtCompat {
 
-    private const val DEFAULT_NBT_LIST_TYPE = 10
+    private val EXHAUSTION_FIELD_NAMES = setOf("exhaustion", "field_7752", "c", "e")
+    private val GET_EXHAUSTION_METHOD_NAMES = setOf("getExhaustion", "method_35219", "d")
+    private val SET_EXHAUSTION_METHOD_NAMES = setOf("setExhaustion", "method_35218", "c")
 
     fun getExhaustion(manager: Any): Float {
         return try {
-            val field = manager.javaClass.getDeclaredField("exhaustion")
-            field.isAccessible = true
+            val field = findField(manager.javaClass, EXHAUSTION_FIELD_NAMES)
+                ?: throw NoSuchFieldException("exhaustion")
             field.getFloat(manager)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             try {
-                val method = manager.javaClass.getMethod("getExhaustion")
+                val method = findMethod(
+                    manager.javaClass,
+                    GET_EXHAUSTION_METHOD_NAMES,
+                    emptyArray(),
+                    Float::class.javaPrimitiveType
+                ) ?: throw NoSuchMethodException("getExhaustion")
                 method.invoke(manager) as Float
-            } catch (e2: Exception) {
+            } catch (_: Exception) {
                 0f
             }
         }
@@ -33,12 +42,17 @@ object NbtCompat {
 
     fun setExhaustion(manager: Any, value: Float) {
         try {
-            val field = manager.javaClass.getDeclaredField("exhaustion")
-            field.isAccessible = true
+            val field = findField(manager.javaClass, EXHAUSTION_FIELD_NAMES)
+                ?: throw NoSuchFieldException("exhaustion")
             field.setFloat(manager, value)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             try {
-                val method = manager.javaClass.getMethod("setExhaustion", Float::class.javaPrimitiveType)
+                val method = findMethod(
+                    manager.javaClass,
+                    SET_EXHAUSTION_METHOD_NAMES,
+                    arrayOf(Float::class.javaPrimitiveType!!),
+                    Void.TYPE
+                ) ?: throw NoSuchMethodException("setExhaustion")
                 method.invoke(manager, value)
             } catch (_: Exception) {
             }
@@ -46,62 +60,52 @@ object NbtCompat {
     }
 
     fun getList(compound: NbtCompound, key: String): NbtList {
-        return try {
-            val method = NbtCompound::class.java.getMethod("getList", String::class.java)
-            val opt = method.invoke(compound, key)
-            (opt as Optional<NbtList>).orElse(NbtList())
-        } catch (e: NoSuchMethodException) {
-            val method = NbtCompound::class.java.getMethod(
-                "getList",
-                String::class.java,
-                Int::class.javaPrimitiveType
-            )
-            method.invoke(compound, key, DEFAULT_NBT_LIST_TYPE) as NbtList
-        }
+        return (compound.get(key) as? NbtList) ?: NbtList()
     }
 
     fun listSize(list: NbtList): Int {
-        return try {
-            val method = NbtList::class.java.getMethod("size")
-            method.invoke(list) as Int
-        } catch (e: Exception) {
-            (list as Collection<*>).size
-        }
+        return list.size
     }
 
     fun getCompound(list: NbtList, index: Int): NbtCompound {
-        return try {
-            val method = NbtList::class.java.getMethod("getCompound", Int::class.javaPrimitiveType)
-            method.invoke(list, index) as NbtCompound
-        } catch (e: NoSuchMethodException) {
-            val method = NbtList::class.java.getMethod("get", Int::class.javaPrimitiveType)
-            method.invoke(list, index) as NbtCompound
-        }
+        return list[index] as NbtCompound
     }
 
     fun writeInventoryNbt(inventory: Inventory, compound: NbtCompound) {
-        try {
-            val method = Inventory::class.java.getMethod("writeNbt", NbtCompound::class.java)
-            method.invoke(inventory, compound)
-        } catch (e: NoSuchMethodException) {
-            val list = NbtList()
-            val type = inventory.javaClass
-            val method = type.getMethod("writeNbt", NbtList::class.java)
-            val result = method.invoke(inventory, list)
-            compound.put("Inventory", result as NbtElement)
+        val compoundMethod = findMethod(
+            inventory.javaClass,
+            arrayOf(NbtCompound::class.java)
+        )
+        if (compoundMethod != null) {
+            compoundMethod.invoke(inventory, compound)
+            return
         }
+
+        val listMethod = findMethod(
+            inventory.javaClass,
+            arrayOf(NbtList::class.java),
+            NbtList::class.java
+        ) ?: throw NoSuchMethodException("inventory write NBT")
+        val list = NbtList()
+        val result = listMethod.invoke(inventory, list)
+        compound.put("Inventory", result as NbtElement)
     }
 
     fun readInventoryNbt(inventory: Inventory, compound: NbtCompound) {
-        try {
-            val method = Inventory::class.java.getMethod("readNbt", NbtCompound::class.java)
-            method.invoke(inventory, compound)
-        } catch (e: NoSuchMethodException) {
-            val list = getList(compound, "Inventory")
-            val type = inventory.javaClass
-            val method = type.getMethod("readNbt", NbtList::class.java)
-            method.invoke(inventory, list)
+        val compoundMethod = findMethod(
+            inventory.javaClass,
+            arrayOf(NbtCompound::class.java)
+        )
+        if (compoundMethod != null) {
+            compoundMethod.invoke(inventory, compound)
+            return
         }
+
+        val listMethod = findMethod(
+            inventory.javaClass,
+            arrayOf(NbtList::class.java)
+        ) ?: throw NoSuchMethodException("inventory read NBT")
+        listMethod.invoke(inventory, getList(compound, "Inventory"))
     }
 
     fun writeEnderChestNbt(
@@ -109,29 +113,30 @@ object NbtCompat {
         compound: NbtCompound,
         registryManager: RegistryWrapper.WrapperLookup
     ) {
-        try {
-            val method = EnderChestInventory::class.java.getMethod(
-                "writeNbt",
-                NbtCompound::class.java,
-                RegistryWrapper.WrapperLookup::class.java
-            )
-            method.invoke(enderChest, compound, registryManager)
-        } catch (e: NoSuchMethodException) {
-            try {
-                val method = EnderChestInventory::class.java.getMethod(
-                    "writeNbt",
-                    NbtCompound::class.java
-                )
-                method.invoke(enderChest, compound)
-            } catch (e2: NoSuchMethodException) {
-                val method = EnderChestInventory::class.java.getMethod(
-                    "toNbtList",
-                    RegistryWrapper.WrapperLookup::class.java
-                )
-                val list = method.invoke(enderChest, registryManager) as NbtList
-                compound.put("EnderItems", list)
-            }
+        val modernMethod = findMethod(
+            enderChest.javaClass,
+            arrayOf(NbtCompound::class.java, RegistryWrapper.WrapperLookup::class.java)
+        )
+        if (modernMethod != null) {
+            modernMethod.invoke(enderChest, compound, registryManager)
+            return
         }
+
+        val compoundMethod = findMethod(
+            enderChest.javaClass,
+            arrayOf(NbtCompound::class.java)
+        )
+        if (compoundMethod != null) {
+            compoundMethod.invoke(enderChest, compound)
+            return
+        }
+
+        val listMethod = findMethod(
+            enderChest.javaClass,
+            arrayOf(RegistryWrapper.WrapperLookup::class.java),
+            NbtList::class.java
+        ) ?: throw NoSuchMethodException("ender chest write NBT")
+        compound.put("EnderItems", listMethod.invoke(enderChest, registryManager) as NbtElement)
     }
 
     fun readEnderChestNbt(
@@ -139,61 +144,127 @@ object NbtCompat {
         compound: NbtCompound,
         registryManager: RegistryWrapper.WrapperLookup
     ) {
-        try {
-            val method = EnderChestInventory::class.java.getMethod(
-                "readNbt",
-                NbtCompound::class.java
-            )
-            method.invoke(enderChest, compound)
-        } catch (e: NoSuchMethodException) {
-            val list = getList(compound, "EnderItems")
-            val method = EnderChestInventory::class.java.getMethod(
-                "readNbtList",
-                NbtList::class.java,
-                RegistryWrapper.WrapperLookup::class.java
-            )
-            method.invoke(enderChest, list, registryManager)
+        val compoundMethod = findMethod(
+            enderChest.javaClass,
+            arrayOf(NbtCompound::class.java)
+        )
+        if (compoundMethod != null) {
+            compoundMethod.invoke(enderChest, compound)
+            return
         }
+
+        val listMethod = findMethod(
+            enderChest.javaClass,
+            arrayOf(NbtList::class.java, RegistryWrapper.WrapperLookup::class.java)
+        ) ?: throw NoSuchMethodException("ender chest read NBT")
+        listMethod.invoke(enderChest, getList(compound, "EnderItems"), registryManager)
     }
 
     fun writeStatusEffectNbt(
         effect: StatusEffectInstance,
         registryManager: RegistryWrapper.WrapperLookup
     ): NbtCompound {
-        val compound = NbtCompound()
-        try {
-            val method = StatusEffectInstance::class.java.getMethod(
-                "writeNbt",
-                RegistryWrapper.WrapperLookup::class.java
-            )
-            val result = method.invoke(effect, registryManager)
-            return result as NbtCompound
-        } catch (e: NoSuchMethodException) {
-            val method = StatusEffectInstance::class.java.getMethod("writeNbt")
-            val result = method.invoke(effect)
-            return result as NbtCompound
+        val modernMethod = findMethod(
+            StatusEffectInstance::class.java,
+            arrayOf(RegistryWrapper.WrapperLookup::class.java),
+            NbtCompound::class.java
+        )
+        if (modernMethod != null) {
+            return modernMethod.invoke(effect, registryManager) as NbtCompound
         }
+
+        val legacyMethod = findMethod(
+            StatusEffectInstance::class.java,
+            emptyArray(),
+            NbtCompound::class.java
+        ) ?: throw NoSuchMethodException("status effect write NBT")
+        return legacyMethod.invoke(effect) as NbtCompound
     }
 
     fun fromNbtStatusEffect(
         nbt: NbtCompound,
         registryManager: RegistryWrapper.WrapperLookup
     ): StatusEffectInstance? {
-        return try {
-            val method = StatusEffectInstance::class.java.getMethod(
-                "fromNbt",
-                RegistryWrapper.WrapperLookup::class.java,
-                NbtCompound::class.java
-            )
-            val result = method.invoke(null, registryManager, nbt)
-            (result as? Optional<*>)?.orElse(null) as? StatusEffectInstance
-        } catch (e: NoSuchMethodException) {
-            val method = StatusEffectInstance::class.java.getMethod(
-                "fromNbt",
-                NbtCompound::class.java
-            )
-            method.invoke(null, nbt) as? StatusEffectInstance
+        val modernMethod = findMethod(
+            StatusEffectInstance::class.java,
+            arrayOf(RegistryWrapper.WrapperLookup::class.java, NbtCompound::class.java)
+        )
+        if (modernMethod != null) {
+            return unwrapStatusEffect(modernMethod.invoke(null, registryManager, nbt))
         }
+
+        val legacyMethod = findMethod(
+            StatusEffectInstance::class.java,
+            arrayOf(NbtCompound::class.java)
+        ) ?: throw NoSuchMethodException("status effect read NBT")
+        return unwrapStatusEffect(legacyMethod.invoke(null, nbt))
+    }
+
+    private fun unwrapStatusEffect(value: Any?): StatusEffectInstance? {
+        return when (value) {
+            is Optional<*> -> value.orElse(null) as? StatusEffectInstance
+            else -> value as? StatusEffectInstance
+        }
+    }
+
+    private fun findField(type: Class<*>, names: Set<String>): Field? {
+        var current: Class<*>? = type
+        while (current != null) {
+            val field = current.declaredFields.firstOrNull {
+                it.name in names && it.type == Float::class.javaPrimitiveType
+            }
+            if (field != null) {
+                field.trySetAccessible()
+                return field
+            }
+            current = current.superclass
+        }
+        return null
+    }
+
+    private fun findMethod(
+        type: Class<*>,
+        parameterTypes: Array<Class<*>>,
+        returnType: Class<*>? = null
+    ): Method? {
+        var current: Class<*>? = type
+        while (current != null) {
+            val method = current.declaredMethods.firstOrNull { candidate ->
+                candidate.parameterTypes.contentEquals(parameterTypes) &&
+                    (returnType == null || returnType == candidate.returnType)
+            }
+            if (method != null) {
+                method.trySetAccessible()
+                return method
+            }
+            current = current.superclass
+        }
+        return type.methods.firstOrNull { candidate ->
+            candidate.parameterTypes.contentEquals(parameterTypes) &&
+                (returnType == null || returnType == candidate.returnType)
+        }
+    }
+
+    private fun findMethod(
+        type: Class<*>,
+        names: Set<String>,
+        parameterTypes: Array<Class<*>>,
+        returnType: Class<*>?
+    ): Method? {
+        var current: Class<*>? = type
+        while (current != null) {
+            val method = current.declaredMethods.firstOrNull { candidate ->
+                candidate.name in names &&
+                    candidate.parameterTypes.contentEquals(parameterTypes) &&
+                    (returnType == null || returnType == candidate.returnType)
+            }
+            if (method != null) {
+                method.trySetAccessible()
+                return method
+            }
+            current = current.superclass
+        }
+        return null
     }
 
     fun writeInventoryCompound(player: ServerPlayerEntity): NbtCompound {
