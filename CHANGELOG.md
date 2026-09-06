@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.2](https://github.com/KroderDev/magnus/compare/v1.4.1...v1.4.2) (2026-09-06)
+
+
+### Build System
+
+* **deps:** bump actions/labeler from 6 to 7 ([07ca77b](https://github.com/KroderDev/magnus/commit/07ca77b015affe58a560befdf4fdcb5dcfcce701))
+* **deps:** bump actions/labeler from 6 to 7 ([576a024](https://github.com/KroderDev/magnus/commit/576a02419e9f6851714970f63320ac3c5b606dc6))
+* **deps:** bump actions/setup-java from 5 to 6 ([b009b08](https://github.com/KroderDev/magnus/commit/b009b08743793706b6ee5ad29ca3f6ccd1edf844))
+* **deps:** bump actions/setup-java from 5 to 6 ([3bf5980](https://github.com/KroderDev/magnus/commit/3bf59801d3dd835f61ac4bab837d0eba96407f19))
+* **deps:** bump github/codeql-action from 4 to 4.37.4 ([ff6abd6](https://github.com/KroderDev/magnus/commit/ff6abd68757088a45d1efd6f521bc65c1b67a280))
+* **deps:** bump github/codeql-action from 4 to 4.37.4 ([4ed3c2d](https://github.com/KroderDev/magnus/commit/4ed3c2dc98def42d06cded937b270cabf0a7755e))
+* **deps:** bump github/codeql-action from 4.37.4 to 4.37.9 ([f85deab](https://github.com/KroderDev/magnus/commit/f85deabc4a2a366b586e4f1a18f5aa561c2b1bec))
+* **deps:** bump github/codeql-action from 4.37.4 to 4.37.9 ([364d98f](https://github.com/KroderDev/magnus/commit/364d98f69f2abbe853f668151ba2f76db02b1c90))
+* **deps:** bump gradle-wrapper from 9.7.0 to 9.7.1 in the minor-and-patch group ([463b4a4](https://github.com/KroderDev/magnus/commit/463b4a44836c4377c2d8f69bbb21247e757b4067))
+* **deps:** bump gradle-wrapper in the minor-and-patch group ([1761d55](https://github.com/KroderDev/magnus/commit/1761d555df2cb8cad3fc033d66ae42b39af09a4b))
+* **deps:** bump gradle/actions from 6 to 6.2.0 ([e4458f2](https://github.com/KroderDev/magnus/commit/e4458f2f5adab1181baed6fe7ebb1a9be26f2219))
+* **deps:** bump gradle/actions from 6 to 6.2.0 ([c5a5c1e](https://github.com/KroderDev/magnus/commit/c5a5c1efee78e954c30412bf02e61cb093411fc6))
+* **deps:** bump gradle/actions from 6.2.0 to 6.3.0 ([5aa5ae7](https://github.com/KroderDev/magnus/commit/5aa5ae7c0839b0e2642b9a86e70eb642a015bc4f))
+* **deps:** bump gradle/actions from 6.2.0 to 6.3.0 ([ed3b404](https://github.com/KroderDev/magnus/commit/ed3b4044a953030c732946321537de922bcd15fc))
+* **deps:** bump the minor-and-patch group with 2 updates ([db39aee](https://github.com/KroderDev/magnus/commit/db39aee7ba10a8101cfa205b632bd73ad1d5d1fa))
+* **deps:** bump the minor-and-patch group with 2 updates ([a2e6034](https://github.com/KroderDev/magnus/commit/a2e603472d2179c9ac3578153d5e14c501a5d497))
+
 ## [1.4.1](https://github.com/KroderDev/magnus/compare/v1.4.0...v1.4.1) (2026-07-17)
 
 
