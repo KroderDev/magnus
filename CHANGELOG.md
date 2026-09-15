@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.3](https://github.com/KroderDev/magnus/compare/v1.4.2...v1.4.3) (2026-09-15)
+
+
+### Build System
+
+* **deps:** bump github/codeql-action from 4.37.9 to 4.38.0 ([3f7f3da](https://github.com/KroderDev/magnus/commit/3f7f3da89c08e7a8545cd16dd81dddb8c8389594))
+* **deps:** bump github/codeql-action from 4.37.9 to 4.38.0 ([3cb6797](https://github.com/KroderDev/magnus/commit/3cb679793c57bd3a2a2b2fbfd395b1922472c493))
+* **deps:** bump the minor-and-patch group with 2 updates ([c215c66](https://github.com/KroderDev/magnus/commit/c215c665493b87b75384c14c6949bd460fb524ba))
+* **deps:** bump the minor-and-patch group with 2 updates ([e56ecc8](https://github.com/KroderDev/magnus/commit/e56ecc81d666eba2ad5e66de5436f47b914792fe))
+
 ## [1.4.2](https://github.com/KroderDev/magnus/compare/v1.4.1...v1.4.2) (2026-09-06)
 
 
