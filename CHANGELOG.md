@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.4.3](https://github.com/KroderDev/magnus/compare/v1.4.2...v1.4.3) (2026-11-22)
+
+
+### Build System
+
+* **deps:** bump com.redis:testcontainers-redis from 2.2.4 to 3.0.1 ([c5514b1](https://github.com/KroderDev/magnus/commit/c5514b1cf6587e19f0d099ea82f8afad4459a334))
+* **deps:** bump com.redis:testcontainers-redis from 2.2.4 to 3.0.1 ([4648902](https://github.com/KroderDev/magnus/commit/4648902e44761ef973c37bfb28ab78d84ee8dbdf))
+* **deps:** bump github/codeql-action from 4.37.9 to 4.38.0 ([3f7f3da](https://github.com/KroderDev/magnus/commit/3f7f3da89c08e7a8545cd16dd81dddb8c8389594))
+* **deps:** bump github/codeql-action from 4.37.9 to 4.38.0 ([3cb6797](https://github.com/KroderDev/magnus/commit/3cb679793c57bd3a2a2b2fbfd395b1922472c493))
+* **deps:** bump github/codeql-action from 4.38.0 to 4.39.3 ([0ed6fac](https://github.com/KroderDev/magnus/commit/0ed6face94bd49bc441f2d8e58415ff6ea4ef92c))
+* **deps:** bump github/codeql-action from 4.38.0 to 4.39.3 ([0786830](https://github.com/KroderDev/magnus/commit/0786830527f46d7b8dbfd2f67f3dd672166fdb4f))
+* **deps:** bump gradle/actions from 6.3.0 to 6.4.1 ([4cad438](https://github.com/KroderDev/magnus/commit/4cad43813c715aaca1a296ea0831d56af16e7073))
+* **deps:** bump gradle/actions from 6.3.0 to 6.4.1 ([905f758](https://github.com/KroderDev/magnus/commit/905f758da9f219ea0e302ee6b68e9793ac46a8a1))
+* **deps:** bump the minor-and-patch group across 1 directory with 2 updates ([bacd3da](https://github.com/KroderDev/magnus/commit/bacd3da966b76ab2f4f770a391d8237bbcbaa47a))
+* **deps:** bump the minor-and-patch group across 1 directory with 2 updates ([0baa8c2](https://github.com/KroderDev/magnus/commit/0baa8c2a84cd8656061e8c62aa9aa8e949b795e3))
+* **deps:** bump the minor-and-patch group across 1 directory with 3 updates ([0c671d2](https://github.com/KroderDev/magnus/commit/0c671d2cb75edddaf5ca66671a0885b51633c92d))
+* **deps:** bump the minor-and-patch group across 1 directory with 3 updates ([e7140bd](https://github.com/KroderDev/magnus/commit/e7140bd10cc2796af4d4ac7bf62fd01f36021543))
+* **deps:** bump the minor-and-patch group with 2 updates ([c215c66](https://github.com/KroderDev/magnus/commit/c215c665493b87b75384c14c6949bd460fb524ba))
+* **deps:** bump the minor-and-patch group with 2 updates ([e56ecc8](https://github.com/KroderDev/magnus/commit/e56ecc81d666eba2ad5e66de5436f47b914792fe))
+
 ## [1.4.2](https://github.com/KroderDev/magnus/compare/v1.4.1...v1.4.2) (2026-09-06)
 
 
